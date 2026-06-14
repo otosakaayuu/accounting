@@ -1,0 +1,1820 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AkunSimple — Akuntansi Lengkap</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0A0A0A;--surface:#111111;--surface2:#1A1A1A;--border:#2A2A2A;--border2:#3A3A3A;
+  --text:#E8E6E1;--text2:#9A9896;--text3:#5A5856;
+  --green:#22C97A;--green-bg:#0D2818;--green-bd:#1A4D2E;
+  --red:#F06060;--red-bg:#280D0D;--red-bd:#4D1A1A;
+  --blue:#60A5FA;--blue-bg:#0D1928;--blue-bd:#1A3050;
+  --amber:#FBBF24;--amber-bg:#281E0D;--amber-bd:#4D3A1A;
+  --accent:#22C97A;--accent2:#0D2818;
+  --rad:10px;--rad-sm:6px;--sha:0 1px 4px rgba(0,0,0,0.5);--sha2:0 4px 20px rgba(0,0,0,0.7);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;min-height:100vh}
+/* HEADER */
+.hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:54px;position:sticky;top:0;z-index:200;box-shadow:var(--sha)}
+.logo{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:17px;color:var(--accent);display:flex;align-items:center;gap:8px}
+.logo-box{width:30px;height:30px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#0A0A0A;font-size:15px}
+.hdr-btns{display:flex;gap:6px}
+/* LAYOUT */
+.layout{display:flex;min-height:calc(100vh - 54px)}
+/* SIDEBAR */
+.sidebar{width:210px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:12px 10px;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+.sid-lbl{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;padding:10px 10px 4px}
+.nav-btn{display:flex;align-items:center;gap:9px;padding:8px 11px;border-radius:var(--rad-sm);cursor:pointer;font-size:13px;color:var(--text2);border:none;background:transparent;width:100%;text-align:left;font-family:'Inter',sans-serif;transition:all .13s}
+.nav-btn:hover{background:var(--surface2);color:var(--text)}
+.nav-btn.active{background:var(--accent2);color:var(--accent);font-weight:600}
+.nav-icon{width:18px;text-align:center;font-size:15px}
+/* MAIN */
+.main{flex:1;padding:22px;overflow:auto}
+.page{display:none}.page.active{display:block}
+.pg-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:21px;font-weight:700;margin-bottom:3px}
+.pg-sub{font-size:13px;color:var(--text2);margin-bottom:18px}
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rad);box-shadow:var(--sha);margin-bottom:14px}
+.card-hd{padding:12px 16px;border-bottom:1px solid var(--border);font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.card-bd{padding:16px}
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px}
+/* METRICS */
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:var(--rad);padding:13px 15px;box-shadow:var(--sha)}
+.metric-lbl{font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+.metric-val{font-size:20px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif}
+.metric-note{font-size:11px;color:var(--text3);margin-top:2px}
+/* FORM */
+.fg{display:flex;flex-direction:column;gap:4px}
+.fg label{font-size:12px;font-weight:500;color:var(--text2)}
+.fg input,.fg select,.fg textarea{padding:7px 10px;border:1px solid var(--border2);border-radius:var(--rad-sm);font-size:13px;font-family:'Inter',sans-serif;color:var(--text);background:var(--surface);transition:border .13s,box-shadow .13s;width:100%}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,201,122,.15)}
+.pfx-wrap{position:relative}.pfx{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--text3);pointer-events:none}
+.pfx-wrap input{padding-left:30px}
+/* BUTTONS */
+.btn{padding:8px 16px;border-radius:var(--rad-sm);border:1px solid transparent;cursor:pointer;font-size:13px;font-weight:500;font-family:'Inter',sans-serif;transition:all .13s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.btn-pri{background:var(--accent);color:#0A0A0A;border-color:var(--accent);font-weight:600}.btn-pri:hover{background:#1AB368}
+.btn-sec{background:var(--surface);color:var(--text2);border-color:var(--border2)}.btn-sec:hover{background:var(--surface2);color:var(--text)}
+.btn-del{background:var(--red-bg);color:var(--red);border-color:var(--red-bd)}.btn-del:hover{background:#F5D0D0}
+.btn-warn{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-bd)}.btn-warn:hover{background:#F5E8C0}
+.btn-sm{padding:4px 9px;font-size:12px}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+/* TABLE */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{text-align:left;padding:9px 13px;background:var(--surface2);border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+tbody td{padding:9px 13px;border-bottom:1px solid var(--border);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--bg)}
+tfoot td{padding:9px 13px;font-weight:600;background:var(--surface2);border-top:1px solid var(--border)}
+.tr{text-align:right}.tc{text-align:center}
+/* BADGE */
+.badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap}
+.bg-green{background:var(--green-bg);color:var(--green);border:1px solid var(--green-bd)}
+.bg-red{background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd)}
+.bg-blue{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-bd)}
+.bg-amber{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-bd)}
+.bg-gray{background:var(--surface2);color:var(--text2);border:1px solid var(--border2)}
+/* ALERT */
+.alert{padding:10px 13px;border-radius:var(--rad-sm);font-size:13px;display:flex;align-items:flex-start;gap:8px;margin-bottom:10px}
+.al-ok{background:var(--green-bg);color:var(--green);border:1px solid var(--green-bd)}
+.al-err{background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd)}
+.al-warn{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-bd)}
+.al-info{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-bd)}
+/* EQ BAR */
+.eq-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--rad);padding:14px 20px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;box-shadow:var(--sha)}
+.eq-item{text-align:center}
+.eq-val{font-size:22px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif}
+.eq-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-top:1px}
+.eq-op{font-size:22px;color:var(--text3);font-weight:300}
+.eq-status{width:100%;text-align:center;font-size:12px;font-weight:500;padding:6px 0 0;border-top:1px dashed var(--border);margin-top:8px}
+/* KONSEP */
+.kons-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kons-card{border:1px solid var(--border);border-radius:var(--rad);padding:14px;cursor:pointer;transition:all .13s}
+.kons-card:hover{border-color:var(--accent);box-shadow:var(--sha2)}
+.kons-card.act{border-color:var(--accent);background:var(--accent2)}
+.kons-detail{display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--rad);padding:16px;margin-top:10px;animation:fadeIn .2s ease}
+.kons-detail.show{display:block}
+/* DC TABLE */
+.dc-grid{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border);border-radius:var(--rad);overflow:hidden}
+.dc-col{}.dc-head{background:var(--surface2);padding:9px 13px;font-size:11px;font-weight:700;text-align:center;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.5px}
+.dc-row{padding:7px 13px;font-size:13px;border-bottom:1px solid var(--border)}.dc-row:last-child{border-bottom:none}
+/* LAPORAN */
+.rpt-section-hd{padding:9px 14px;font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;background:var(--surface2);border-top:1px solid var(--border)}
+.rpt-row{display:flex;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border);font-size:13px}
+.rpt-row:last-child{border-bottom:none}
+.rpt-row.ind{padding-left:28px}
+.rpt-row.ind2{padding-left:42px}
+.rpt-row.sub-total{font-weight:600;background:var(--surface2)}
+.rpt-row.grand{font-weight:700;font-size:14px;background:var(--accent2);color:var(--accent);padding:11px 14px}
+/* KOREKSI */
+.kor-item{border:1px solid var(--border);border-radius:var(--rad-sm);padding:11px 14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px;transition:background .13s}
+.kor-item:hover{background:var(--bg)}
+.kor-icon{font-size:17px;flex-shrink:0;margin-top:1px}
+.kor-body{flex:1}
+.kor-title{font-size:13px;font-weight:500}
+.kor-desc{font-size:12px;color:var(--text2);margin-top:2px;line-height:1.5}
+.kor-fix{flex-shrink:0}
+/* MODAL */
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;align-items:center;justify-content:center}
+.modal-ov.show{display:flex}
+.modal{background:var(--surface);border-radius:var(--rad);padding:22px;width:500px;max-width:95vw;box-shadow:var(--sha2);animation:fadeIn .2s ease}
+.modal-title{font-size:16px;font-weight:600;margin-bottom:14px}
+.modal-foot{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+/* TOAST */
+.toast-wrap{position:fixed;bottom:22px;right:22px;z-index:999;display:flex;flex-direction:column;gap:7px}
+.toast{padding:10px 15px;border-radius:var(--rad-sm);font-size:13px;box-shadow:var(--sha2);display:flex;align-items:center;gap:7px;animation:slideUp .2s ease;max-width:320px;color:#fff}
+.t-ok{background:var(--green)}.t-err{background:var(--red)}.t-warn{background:#8B5E00}.t-info{background:var(--blue)}
+/* EMPTY */
+.empty{text-align:center;padding:44px 20px}
+.empty-ico{font-size:38px;margin-bottom:10px}
+.empty-t{font-size:15px;font-weight:600;color:var(--text2);margin-bottom:6px}
+.empty-d{font-size:13px;color:var(--text3);margin-bottom:14px;line-height:1.6}
+/* HIGHLIGHT */
+.hl-row{background:#FFFDE7!important;transition:background 1s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:768px){.sidebar{display:none}.main{padding:14px}.g2,.g3,.g4,.kons-grid{grid-template-columns:1fr}.metric-grid{grid-template-columns:1fr 1fr}}
+@media print{.sidebar,.hdr,.btn,.no-print,.modal-ov,.toast-wrap{display:none!important}.main{padding:0}body{background:#fff}}
+a{color:var(--accent);text-decoration:none}.a:hover{text-decoration:underline}
+hr{border:none;border-top:1px solid var(--border);margin:14px 0}
+.divider{height:1px;background:var(--border);margin:12px 0}
+</style>
+</head>
+<body>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- EDIT MODAL -->
+<div class="modal-ov" id="editModal">
+  <div class="modal">
+    <div class="modal-title">✏️ Edit Transaksi</div>
+    <div id="editModalBody"></div>
+    <div class="modal-foot">
+      <button class="btn btn-sec" onclick="closeModal()">Batal</button>
+      <button class="btn btn-pri" onclick="saveEdit()">💾 Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- KOREKSI MODAL -->
+<div class="modal-ov" id="korModal">
+  <div class="modal">
+    <div class="modal-title" id="korModalTitle">🔧 Perbaiki Transaksi</div>
+    <div id="korModalBody"></div>
+    <div class="modal-foot">
+      <button class="btn btn-sec" onclick="closeKorModal()">Batal</button>
+      <button class="btn btn-pri" onclick="saveKorFix()">✅ Terapkan Perbaikan</button>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="logo"><div class="logo-box">📒</div>AkunSimple</div>
+  <div class="hdr-btns no-print">
+    <button class="btn btn-sec btn-sm" onclick="loadContoh()">📋 Data Contoh</button>
+    <button class="btn btn-sec btn-sm" onclick="exportCSV()">⬇️ CSV</button>
+    <button class="btn btn-sec btn-sm" onclick="window.print()">🖨️ Cetak</button>
+    <button class="btn btn-del btn-sm" onclick="clearAll()">🗑️ Reset</button>
+  </div>
+</header>
+
+<div class="layout">
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sid-lbl">Utama</div>
+  <button class="nav-btn active" id="nav-dashboard" onclick="goto('dashboard')"><span class="nav-icon">📊</span>Dashboard</button>
+  <button class="nav-btn" id="nav-konsep" onclick="goto('konsep')"><span class="nav-icon">📚</span>Belajar Konsep</button>
+  <div class="sid-lbl">Pencatatan</div>
+  <button class="nav-btn" id="nav-jurnal" onclick="goto('jurnal')"><span class="nav-icon">📝</span>Jurnal Umum</button>
+  <button class="nav-btn" id="nav-besar" onclick="goto('besar')"><span class="nav-icon">📖</span>Buku Besar</button>
+  <button class="nav-btn" id="nav-neraca-saldo" onclick="goto('neraca-saldo')"><span class="nav-icon">⚖️</span>Neraca Saldo</button>
+  <div class="sid-lbl">Koreksi</div>
+  <button class="nav-btn" id="nav-koreksi" onclick="goto('koreksi')"><span class="nav-icon">🔍</span>Koreksi & Perbaikan</button>
+  <div class="sid-lbl">Laporan Keuangan</div>
+  <button class="nav-btn" id="nav-labarugi" onclick="goto('labarugi')"><span class="nav-icon">📈</span>Laba Rugi</button>
+  <button class="nav-btn" id="nav-neracakeu" onclick="goto('neracakeu')"><span class="nav-icon">📋</span>Neraca Keuangan</button>
+  <button class="nav-btn" id="nav-perubahan" onclick="goto('perubahan')"><span class="nav-icon">🔄</span>Perubahan Ekuitas</button>
+  <button class="nav-btn" id="nav-aruskas" onclick="goto('aruskas')"><span class="nav-icon">💰</span>Arus Kas</button>
+  <div class="sid-lbl">Latihan Soal</div>
+  <button class="nav-btn" id="nav-latihan" onclick="goto('latihan')"><span class="nav-icon">🎯</span>Latihan Soal</button>
+  <div class="sid-lbl">Referensi</div>
+  <button class="nav-btn" id="nav-coa" onclick="goto('coa')"><span class="nav-icon">🗂️</span>Daftar Akun</button>
+</nav>
+
+<main class="main">
+
+<!-- ═══════════ DASHBOARD ═══════════ -->
+<div id="page-dashboard" class="page active">
+  <div class="pg-title">📊 Dashboard</div>
+  <div class="pg-sub">Ringkasan posisi keuangan bisnis Anda secara real-time</div>
+
+  <div class="eq-bar">
+    <div class="eq-item"><div class="eq-val" id="d-aset" style="color:var(--blue)">Rp 0</div><div class="eq-lbl">Total Aset</div></div>
+    <div class="eq-op">=</div>
+    <div class="eq-item"><div class="eq-val" id="d-liab" style="color:var(--red)">Rp 0</div><div class="eq-lbl">Liabilitas</div></div>
+    <div class="eq-op">+</div>
+    <div class="eq-item"><div class="eq-val" id="d-ekuitas" style="color:var(--green)">Rp 0</div><div class="eq-lbl">Ekuitas + Laba</div></div>
+    <div class="eq-status" id="d-eq-st">—</div>
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric"><div class="metric-lbl">Transaksi</div><div class="metric-val" id="d-tx">0</div><div class="metric-note">entri jurnal</div></div>
+    <div class="metric"><div class="metric-lbl">Pendapatan</div><div class="metric-val" style="color:var(--green)" id="d-pend">Rp 0</div><div class="metric-note">total pendapatan</div></div>
+    <div class="metric"><div class="metric-lbl">Beban</div><div class="metric-val" style="color:var(--red)" id="d-beban">Rp 0</div><div class="metric-note">total beban</div></div>
+    <div class="metric"><div class="metric-lbl">Laba Bersih</div><div class="metric-val" id="d-laba">Rp 0</div><div class="metric-note">pendapatan − beban</div></div>
+  </div>
+
+  <div id="d-warn-card" class="card" style="display:none;border-left:3px solid var(--amber)">
+    <div class="card-hd" style="color:var(--amber)">⚠️ Ada Masalah Terdeteksi — <a href="#" onclick="goto('koreksi');return false" style="font-size:13px;font-weight:400">Lihat Koreksi →</a></div>
+    <div class="card-bd" id="d-warn-body"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">🕐 Transaksi Terakhir</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Tanggal</th><th>Keterangan</th><th>Debit</th><th>Kredit</th><th class="tr">Jumlah</th></tr></thead>
+      <tbody id="d-recent"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ═══════════ KONSEP ═══════════ -->
+<div id="page-konsep" class="page">
+  <div class="pg-title">📚 Belajar Konsep Akuntansi</div>
+  <div class="pg-sub">Klik kartu untuk membaca penjelasan lengkap dengan contoh nyata</div>
+
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-bd" style="text-align:center">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;font-weight:500;text-transform:uppercase;letter-spacing:.5px">Persamaan Dasar Akuntansi</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap">
+        <div style="text-align:center"><div style="font-size:26px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;color:var(--blue)">ASET</div><div style="font-size:11px;color:var(--text3)">Semua kekayaan</div></div>
+        <div style="font-size:28px;color:var(--text3)">=</div>
+        <div style="text-align:center"><div style="font-size:26px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;color:var(--red)">LIABILITAS</div><div style="font-size:11px;color:var(--text3)">Hutang / kewajiban</div></div>
+        <div style="font-size:28px;color:var(--text3)">+</div>
+        <div style="text-align:center"><div style="font-size:26px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;color:var(--green)">EKUITAS</div><div style="font-size:11px;color:var(--text3)">Hak pemilik</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="kons-grid" id="kons-grid"></div>
+  <div class="kons-detail" id="kons-detail"><div id="kons-detail-body"></div></div>
+
+  <div class="card" style="margin-top:14px">
+    <div class="card-hd">⚖️ Tabel Aturan Debit & Kredit</div>
+    <div class="dc-grid">
+      <div class="dc-col" style="border-right:1px solid var(--border)">
+        <div class="dc-head" style="color:var(--blue)">DEBIT (+)</div>
+        <div class="dc-row" style="color:var(--green)">✅ Aset <b>bertambah</b></div>
+        <div class="dc-row" style="color:var(--green)">✅ Beban <b>bertambah</b></div>
+        <div class="dc-row" style="color:var(--green)">✅ Prive <b>bertambah</b></div>
+        <div class="dc-row" style="color:var(--red)">❌ Liabilitas <b>berkurang</b></div>
+        <div class="dc-row" style="color:var(--red)">❌ Ekuitas/Modal <b>berkurang</b></div>
+        <div class="dc-row" style="color:var(--red)">❌ Pendapatan <b>berkurang</b></div>
+      </div>
+      <div class="dc-col">
+        <div class="dc-head" style="color:var(--green)">KREDIT (+)</div>
+        <div class="dc-row" style="color:var(--green)">✅ Liabilitas <b>bertambah</b></div>
+        <div class="dc-row" style="color:var(--green)">✅ Ekuitas/Modal <b>bertambah</b></div>
+        <div class="dc-row" style="color:var(--green)">✅ Pendapatan <b>bertambah</b></div>
+        <div class="dc-row" style="color:var(--red)">❌ Aset <b>berkurang</b></div>
+        <div class="dc-row" style="color:var(--red)">❌ Beban <b>berkurang</b></div>
+        <div class="dc-row" style="color:var(--red)">❌ Prive <b>berkurang</b></div>
+      </div>
+    </div>
+    <div class="alert al-info" style="margin:12px">
+      <span>💡</span><span>Kunci: setiap transaksi <b>wajib</b> memiliki total Debit = total Kredit. Inilah yang disebut <em>Double-Entry Bookkeeping</em>.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ JURNAL ═══════════ -->
+<div id="page-jurnal" class="page">
+  <div class="pg-title">📝 Jurnal Umum</div>
+  <div class="pg-sub">Catat setiap transaksi keuangan secara kronologis</div>
+
+  <div class="card no-print">
+    <div class="card-hd">➕ Input Transaksi Baru</div>
+    <div class="card-bd">
+      <div class="g2" style="margin-bottom:10px">
+        <div class="fg"><label>Tanggal</label><input type="date" id="j-tgl"></div>
+        <div class="fg"><label>Keterangan Transaksi</label><input type="text" id="j-ket" placeholder="Contoh: Penjualan jasa tunai ke CV Berkah"></div>
+      </div>
+      <div class="g3" style="margin-bottom:12px">
+        <div class="fg"><label>Akun Debit</label><select id="j-debit"></select></div>
+        <div class="fg"><label>Akun Kredit</label><select id="j-kredit"></select></div>
+        <div class="fg"><label>Jumlah (Rp)</label><div class="pfx-wrap"><span class="pfx">Rp</span><input type="number" id="j-nom" placeholder="0" min="0" step="500"></div></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-pri" onclick="addTx()">➕ Catat Transaksi</button>
+        <button class="btn btn-sec" onclick="loadContoh()">📋 Muat Data Contoh</button>
+        <button class="btn btn-sec" onclick="exportCSV()">⬇️ Export CSV</button>
+      </div>
+      <div id="j-alerts" style="margin-top:10px"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">Daftar Transaksi <span class="badge bg-gray" id="j-count">0 transaksi</span></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>#</th><th>Tanggal</th><th>Keterangan</th><th>Akun Debit</th><th>Akun Kredit</th><th class="tr">Jumlah</th><th class="tc no-print">Aksi</th></tr></thead>
+      <tbody id="j-body"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ═══════════ BUKU BESAR ═══════════ -->
+<div id="page-besar" class="page">
+  <div class="pg-title">📖 Buku Besar</div>
+  <div class="pg-sub">Rincian mutasi dan saldo per akun</div>
+  <div class="card no-print" style="margin-bottom:14px">
+    <div class="card-bd" style="padding:12px 16px">
+      <div class="fg" style="max-width:220px"><label>Filter Akun</label>
+        <select id="bb-filter" onchange="renderBB()"><option value="all">— Semua Akun —</option></select>
+      </div>
+    </div>
+  </div>
+  <div id="bb-content"></div>
+</div>
+
+<!-- ═══════════ NERACA SALDO ═══════════ -->
+<div id="page-neraca-saldo" class="page">
+  <div class="pg-title">⚖️ Neraca Saldo</div>
+  <div class="pg-sub">Saldo semua akun — Debit harus = Kredit</div>
+  <div class="eq-bar">
+    <div class="eq-item"><div class="eq-val" id="ns-debit" style="color:var(--blue)">Rp 0</div><div class="eq-lbl">Total Debit</div></div>
+    <div class="eq-op">=</div>
+    <div class="eq-item"><div class="eq-val" id="ns-kredit" style="color:var(--red)">Rp 0</div><div class="eq-lbl">Total Kredit</div></div>
+    <div class="eq-status" id="ns-status">—</div>
+  </div>
+  <div class="card">
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Kode</th><th>Nama Akun</th><th>Tipe</th><th class="tr">Debit</th><th class="tr">Kredit</th></tr></thead>
+      <tbody id="ns-body"></tbody>
+      <tfoot><tr><td colspan="3"><b>TOTAL</b></td><td class="tr"><b id="ns-fd">Rp 0</b></td><td class="tr"><b id="ns-fk">Rp 0</b></td></tr></tfoot>
+    </table></div>
+  </div>
+</div>
+
+<!-- ═══════════ KOREKSI ═══════════ -->
+<div id="page-koreksi" class="page">
+  <div class="pg-title">🔍 Koreksi & Perbaikan Otomatis</div>
+  <div class="pg-sub">Sistem memeriksa kesalahan dan memberikan solusi perbaikan yang bisa diterapkan langsung</div>
+
+  <div class="metric-grid">
+    <div class="metric" style="border-left:3px solid var(--red)"><div class="metric-lbl">Kesalahan Kritis</div><div class="metric-val" style="color:var(--red)" id="kor-kritis">0</div><div class="metric-note">harus diperbaiki</div></div>
+    <div class="metric" style="border-left:3px solid var(--amber)"><div class="metric-lbl">Peringatan</div><div class="metric-val" style="color:var(--amber)" id="kor-warn">0</div><div class="metric-note">sebaiknya ditinjau</div></div>
+    <div class="metric" style="border-left:3px solid var(--blue)"><div class="metric-lbl">Saran</div><div class="metric-val" style="color:var(--blue)" id="kor-saran">0</div><div class="metric-note">rekomendasi</div></div>
+    <div class="metric" style="border-left:3px solid var(--green)"><div class="metric-lbl">Sudah Benar</div><div class="metric-val" style="color:var(--green)" id="kor-ok">0</div><div class="metric-note">transaksi valid</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">Hasil Pemeriksaan Lengkap</div>
+    <div class="card-bd" id="kor-list"></div>
+  </div>
+
+  <div class="card no-print">
+    <div class="card-hd">ℹ️ Yang Diperiksa Sistem</div>
+    <div class="card-bd">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;color:var(--text2)">
+        <div>🚨 Akun debit = kredit (tidak valid)</div>
+        <div>🚨 Nominal nol atau negatif</div>
+        <div>⚠️ Duplikasi transaksi persis sama</div>
+        <div>⚠️ Nominal sangat besar (>10 M)</div>
+        <div>⚠️ Nominal sangat kecil (&lt;100)</div>
+        <div>⚠️ Keterangan terlalu singkat</div>
+        <div>💡 Akun tidak lazim untuk transaksi</div>
+        <div>💡 Neraca saldo tidak seimbang</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ LABA RUGI ═══════════ -->
+<div id="page-labarugi" class="page">
+  <div class="pg-title">📈 Laporan Laba Rugi</div>
+  <div class="pg-sub">Hasil operasional bisnis — pendapatan vs beban dalam periode berjalan</div>
+  <div class="metric-grid">
+    <div class="metric"><div class="metric-lbl">Total Pendapatan</div><div class="metric-val" style="color:var(--green)" id="lr-pend">Rp 0</div></div>
+    <div class="metric"><div class="metric-lbl">Total Beban</div><div class="metric-val" style="color:var(--red)" id="lr-beban">Rp 0</div></div>
+    <div class="metric" id="lr-laba-m"><div class="metric-lbl">Laba / Rugi Bersih</div><div class="metric-val" id="lr-laba">Rp 0</div></div>
+    <div class="metric"><div class="metric-lbl">Margin Laba</div><div class="metric-val" id="lr-margin">0%</div><div class="metric-note">laba / pendapatan</div></div>
+  </div>
+  <div class="card"><div id="lr-content"></div></div>
+</div>
+
+<!-- ═══════════ NERACA KEUANGAN ═══════════ -->
+<div id="page-neracakeu" class="page">
+  <div class="pg-title">📋 Neraca Keuangan</div>
+  <div class="pg-sub">Posisi keuangan: aset, liabilitas, dan ekuitas pada akhir periode</div>
+  <div class="eq-bar">
+    <div class="eq-item"><div class="eq-val" id="nk-aset" style="color:var(--blue)">Rp 0</div><div class="eq-lbl">Total Aset</div></div>
+    <div class="eq-op">=</div>
+    <div class="eq-item"><div class="eq-val" id="nk-liab" style="color:var(--red)">Rp 0</div><div class="eq-lbl">Total Liabilitas</div></div>
+    <div class="eq-op">+</div>
+    <div class="eq-item"><div class="eq-val" id="nk-ek" style="color:var(--green)">Rp 0</div><div class="eq-lbl">Total Ekuitas</div></div>
+    <div class="eq-status" id="nk-status">—</div>
+  </div>
+  <div class="card"><div id="nk-content"></div></div>
+</div>
+
+<!-- ═══════════ PERUBAHAN EKUITAS ═══════════ -->
+<div id="page-perubahan" class="page">
+  <div class="pg-title">🔄 Laporan Perubahan Ekuitas</div>
+  <div class="pg-sub">Perubahan modal pemilik selama periode berjalan</div>
+  <div class="card"><div id="pe-content"></div></div>
+</div>
+
+<!-- ═══════════ ARUS KAS ═══════════ -->
+<div id="page-aruskas" class="page">
+  <div class="pg-title">💰 Laporan Arus Kas</div>
+  <div class="pg-sub">Pergerakan kas masuk dan keluar berdasarkan aktivitas bisnis</div>
+  <div class="metric-grid">
+    <div class="metric"><div class="metric-lbl">Arus Operasi</div><div class="metric-val" id="ak-ops">Rp 0</div></div>
+    <div class="metric"><div class="metric-lbl">Arus Investasi</div><div class="metric-val" id="ak-inv">Rp 0</div></div>
+    <div class="metric"><div class="metric-lbl">Arus Pendanaan</div><div class="metric-val" id="ak-fin">Rp 0</div></div>
+    <div class="metric"><div class="metric-lbl">Kenaikan Bersih Kas</div><div class="metric-val" id="ak-net">Rp 0</div></div>
+  </div>
+  <div class="card"><div id="ak-content"></div></div>
+</div>
+
+
+<!-- ═══════════ LATIHAN SOAL ═══════════ -->
+<div id="page-latihan" class="page">
+  <div class="pg-title">🎯 Latihan Soal Akuntansi</div>
+  <div class="pg-sub">Dari yang mudah sampai yang susah — jawab, lalu cek koreksi langsung</div>
+
+  <!-- Progress bar -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-bd" style="padding:14px 16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-size:13px;font-weight:600" id="lat-progress-lbl">Pilih level untuk mulai</span>
+        <span style="font-size:12px;color:var(--text3)" id="lat-score-lbl">Skor: 0 / 0</span>
+      </div>
+      <div style="background:var(--surface2);border-radius:20px;height:8px;overflow:hidden">
+        <div id="lat-progress-bar" style="height:100%;background:var(--accent);border-radius:20px;width:0%;transition:width .4s ease"></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+        <button class="btn btn-sec btn-sm" id="lbtn-mudah" onclick="startLevel('mudah')">🟢 Mudah (10 soal)</button>
+        <button class="btn btn-sec btn-sm" id="lbtn-menengah" onclick="startLevel('menengah')">🟡 Menengah (10 soal)</button>
+        <button class="btn btn-sec btn-sm" id="lbtn-susah" onclick="startLevel('susah')">🟠 Susah (10 soal)</button>
+        <button class="btn btn-sec btn-sm" id="lbtn-ahli" onclick="startLevel('ahli')">🔴 Ahli (10 soal)</button>
+        <button class="btn btn-del btn-sm" onclick="resetLatihan()" style="margin-left:auto">↺ Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Soal area -->
+  <div id="lat-soal-area"></div>
+
+  <!-- Rekap -->
+  <div id="lat-rekap" style="display:none">
+    <div class="card">
+      <div class="card-hd">📊 Rekap Jawaban</div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>#</th><th>Soal</th><th>Jawabanmu</th><th>Jawaban Benar</th><th class="tc">Status</th></tr></thead>
+        <tbody id="lat-rekap-body"></tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ DAFTAR AKUN ═══════════ -->
+<div id="page-coa" class="page">
+  <div class="pg-title">🗂️ Daftar Akun (Chart of Accounts)</div>
+  <div class="pg-sub">Semua akun yang tersedia beserta kode, kategori, saldo normal, dan saldo saat ini</div>
+  <div id="coa-content"></div>
+</div>
+
+</main>
+</div>
+
+<script>
+// ════════════════════════════════════
+// MASTER AKUN
+// ════════════════════════════════════
+const COA = [
+  {kode:'1-001',nama:'Kas',           tipe:'aset',       normal:'D', grup:'Aset Lancar'},
+  {kode:'1-002',nama:'Bank',          tipe:'aset',       normal:'D', grup:'Aset Lancar'},
+  {kode:'1-003',nama:'Piutang Usaha', tipe:'aset',       normal:'D', grup:'Aset Lancar'},
+  {kode:'1-004',nama:'Persediaan',    tipe:'aset',       normal:'D', grup:'Aset Lancar'},
+  {kode:'1-005',nama:'Perlengkapan',  tipe:'aset',       normal:'D', grup:'Aset Lancar'},
+  {kode:'1-006',nama:'Aset Lain-lain',tipe:'aset',       normal:'D', grup:'Aset Lancar'},
+  {kode:'1-101',nama:'Peralatan',     tipe:'aset',       normal:'D', grup:'Aset Tidak Lancar'},
+  {kode:'1-102',nama:'Gedung',        tipe:'aset',       normal:'D', grup:'Aset Tidak Lancar'},
+  {kode:'1-103',nama:'Kendaraan',     tipe:'aset',       normal:'D', grup:'Aset Tidak Lancar'},
+  {kode:'1-104',nama:'Tanah',         tipe:'aset',       normal:'D', grup:'Aset Tidak Lancar'},
+  {kode:'2-001',nama:'Hutang Usaha',  tipe:'liabilitas', normal:'K', grup:'Liabilitas Jangka Pendek'},
+  {kode:'2-002',nama:'Hutang Gaji',   tipe:'liabilitas', normal:'K', grup:'Liabilitas Jangka Pendek'},
+  {kode:'2-003',nama:'Hutang Pajak',  tipe:'liabilitas', normal:'K', grup:'Liabilitas Jangka Pendek'},
+  {kode:'2-101',nama:'Hutang Bank',   tipe:'liabilitas', normal:'K', grup:'Liabilitas Jangka Panjang'},
+  {kode:'2-102',nama:'Obligasi',      tipe:'liabilitas', normal:'K', grup:'Liabilitas Jangka Panjang'},
+  {kode:'3-001',nama:'Modal Pemilik', tipe:'ekuitas',    normal:'K', grup:'Ekuitas'},
+  {kode:'3-002',nama:'Laba Ditahan',  tipe:'ekuitas',    normal:'K', grup:'Ekuitas'},
+  {kode:'3-003',nama:'Prive',         tipe:'ekuitas',    normal:'D', grup:'Ekuitas'},
+  {kode:'4-001',nama:'Pendapatan Jasa',tipe:'pendapatan',normal:'K', grup:'Pendapatan Usaha'},
+  {kode:'4-002',nama:'Pendapatan Penjualan',tipe:'pendapatan',normal:'K',grup:'Pendapatan Usaha'},
+  {kode:'4-003',nama:'Pendapatan Lain-lain',tipe:'pendapatan',normal:'K',grup:'Pendapatan Lain'},
+  {kode:'5-001',nama:'HPP',           tipe:'beban',      normal:'D', grup:'Beban Pokok'},
+  {kode:'5-002',nama:'Beban Gaji',    tipe:'beban',      normal:'D', grup:'Beban Operasional'},
+  {kode:'5-003',nama:'Beban Sewa',    tipe:'beban',      normal:'D', grup:'Beban Operasional'},
+  {kode:'5-004',nama:'Beban Listrik', tipe:'beban',      normal:'D', grup:'Beban Operasional'},
+  {kode:'5-005',nama:'Beban Transportasi',tipe:'beban',  normal:'D', grup:'Beban Operasional'},
+  {kode:'5-006',nama:'Beban Perlengkapan',tipe:'beban',  normal:'D', grup:'Beban Operasional'},
+  {kode:'5-007',nama:'Beban Iklan',   tipe:'beban',      normal:'D', grup:'Beban Operasional'},
+  {kode:'5-008',nama:'Beban Penyusutan',tipe:'beban',    normal:'D', grup:'Beban Operasional'},
+  {kode:'5-009',nama:'Beban Bunga',   tipe:'beban',      normal:'D', grup:'Beban Lain'},
+  {kode:'5-010',nama:'Beban Pajak',   tipe:'beban',      normal:'D', grup:'Beban Lain'},
+];
+
+// ════════════════════════════════════
+// STATE
+// ════════════════════════════════════
+let TXS = [];
+let editIdx = null;
+let korFixData = null;
+
+// ════════════════════════════════════
+// UTILS
+// ════════════════════════════════════
+const $ = id => document.getElementById(id);
+const fmt = n => 'Rp ' + Math.round(Math.abs(n||0)).toLocaleString('id-ID');
+const fmtN = n => (n<0?'(':'') + fmt(n) + (n<0?')':'');
+const todayStr = () => new Date().toISOString().split('T')[0];
+const coaByName = name => COA.find(a=>a.nama===name);
+const coaNames = () => COA.map(a=>a.nama);
+
+function setTxt(id,v){const e=$(id);if(e)e.textContent=v}
+function toast(msg,type='ok'){
+  const w=$('toastWrap'),t=document.createElement('div');
+  t.className='toast t-'+type; t.textContent=msg;
+  w.appendChild(t); setTimeout(()=>t.remove(),3200);
+}
+
+// ════════════════════════════════════
+// INIT
+// ════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  $('j-tgl').value=todayStr();
+  buildSelects();
+  renderAll();
+});
+
+function buildSelects(){
+  const grups=[...new Set(COA.map(a=>a.grup))];
+  let html='';
+  grups.forEach(g=>{
+    html+=`<optgroup label="${g}">`;
+    COA.filter(a=>a.grup===g).forEach(a=>html+=`<option value="${a.nama}">${a.nama}</option>`);
+    html+='</optgroup>';
+  });
+  $('j-debit').innerHTML=html; $('j-kredit').innerHTML=html;
+  $('j-debit').value='Kas'; $('j-kredit').value='Modal Pemilik';
+  let bbOpts='<option value="all">— Semua Akun —</option>';
+  COA.forEach(a=>bbOpts+=`<option value="${a.nama}">${a.nama}</option>`);
+  $('bb-filter').innerHTML=bbOpts;
+}
+
+// ════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════
+function goto(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  $('page-'+id).classList.add('active');
+  $('nav-'+id).classList.add('active');
+  renderAll();
+}
+
+// ════════════════════════════════════
+// SALDO CALC
+// ════════════════════════════════════
+function getSaldoMap(){
+  const m={};
+  COA.forEach(a=>m[a.nama]=0);
+  TXS.forEach(t=>{
+    if(m[t.debit]===undefined)m[t.debit]=0;
+    if(m[t.kredit]===undefined)m[t.kredit]=0;
+    m[t.debit]+=t.nom;
+    m[t.kredit]-=t.nom;
+  });
+  return m;
+}
+
+function calcTotals(){
+  const s=getSaldoMap();
+  let aset=0,liab=0,ekuitas=0,pend=0,beban=0,kas=0;
+  COA.forEach(a=>{
+    const v=s[a.nama]||0;
+    const abs=Math.abs(v);
+    if(a.tipe==='aset'){aset+=abs; if(a.nama==='Kas'||a.nama==='Bank')kas+=abs;}
+    else if(a.tipe==='liabilitas')liab+=abs;
+    else if(a.tipe==='ekuitas'){if(a.normal==='K')ekuitas+=abs;else ekuitas-=abs;}
+    else if(a.tipe==='pendapatan')pend+=abs;
+    else if(a.tipe==='beban')beban+=abs;
+  });
+  const laba=pend-beban;
+  return {aset,liab,ekuitas,pend,beban,laba,kas,saldo:s};
+}
+
+// ════════════════════════════════════
+// RENDER ALL
+// ════════════════════════════════════
+function renderAll(){
+  renderDashboard();
+  renderJurnal();
+  renderBB();
+  renderNeracaSaldo();
+  renderKoreksi();
+  renderLabaRugi();
+  renderNeracaKeu();
+  renderPerubahanEkuitas();
+  renderArusKas();
+  renderCOA();
+  renderKonsep();
+}
+
+// ════════════════════════════════════
+// DASHBOARD
+// ════════════════════════════════════
+function renderDashboard(){
+  const {aset,liab,ekuitas,pend,beban,laba,saldo}=calcTotals();
+  const totalPassiva=liab+ekuitas+laba;
+  setTxt('d-aset',fmt(aset)); setTxt('d-liab',fmt(liab));
+  setTxt('d-ekuitas',fmt(ekuitas+laba));
+  setTxt('d-tx',TXS.length);
+  setTxt('d-pend',fmt(pend)); setTxt('d-beban',fmt(beban));
+  const le=$('d-laba'); le.textContent=fmt(laba); le.style.color=laba>=0?'var(--green)':'var(--red)';
+  const bal=Math.abs(aset-totalPassiva)<1;
+  const st=$('d-eq-st');
+  st.style.color=bal?'var(--green)':'var(--red)';
+  st.textContent=TXS.length===0?'— Belum ada data —':(bal?'✓ Persamaan akuntansi seimbang':'⚠ Tidak seimbang — cek halaman Koreksi');
+
+  const recent=[...TXS].reverse().slice(0,6);
+  $('d-recent').innerHTML=recent.length===0
+    ?'<tr><td colspan="5" style="padding:20px;text-align:center;color:var(--text3)">Belum ada transaksi. <a href="#" onclick="loadContoh();return false">Muat data contoh</a></td></tr>'
+    :recent.map(t=>`<tr><td>${t.tgl}</td><td>${t.ket}</td><td><span class="badge bg-blue">${t.debit}</span></td><td><span class="badge bg-amber">${t.kredit}</span></td><td class="tr" style="font-weight:500">${fmt(t.nom)}</td></tr>`).join('');
+
+  const issues=doKoreksi().filter(i=>i.lv==='err');
+  const wc=$('d-warn-card');
+  if(issues.length>0){
+    wc.style.display='block';
+    $('d-warn-body').innerHTML=issues.slice(0,3).map(i=>`<div class="alert al-warn"><span>⚠️</span><span>${i.msg}</span></div>`).join('');
+  } else wc.style.display='none';
+}
+
+// ════════════════════════════════════
+// JURNAL
+// ════════════════════════════════════
+function addTx(){
+  const tgl=$('j-tgl').value, ket=$('j-ket').value.trim();
+  const debit=$('j-debit').value, kredit=$('j-kredit').value;
+  const nom=parseFloat($('j-nom').value)||0;
+  const errs=[];
+  if(!tgl)errs.push('Tanggal wajib diisi.');
+  if(!ket||ket.length<3)errs.push('Keterangan terlalu singkat (min 3 karakter).');
+  if(nom<=0)errs.push('Nominal harus lebih dari 0.');
+  if(debit===kredit)errs.push('Akun debit dan kredit tidak boleh sama!');
+  const alertEl=$('j-alerts');
+  if(errs.length){alertEl.innerHTML=errs.map(e=>`<div class="alert al-err"><span>🚨</span><span>${e}</span></div>`).join('');setTimeout(()=>alertEl.innerHTML='',4000);return;}
+  alertEl.innerHTML='';
+  TXS.push({id:Date.now(),tgl,ket,debit,kredit,nom});
+  TXS.sort((a,b)=>a.tgl.localeCompare(b.tgl));
+  $('j-ket').value=''; $('j-nom').value='';
+  renderAll(); toast('✓ Transaksi dicatat!','ok');
+}
+
+function renderJurnal(){
+  setTxt('j-count',TXS.length+' transaksi');
+  const tb=$('j-body');
+  if(!TXS.length){
+    tb.innerHTML=`<tr><td colspan="7" style="padding:0"><div class="empty"><div class="empty-ico">📝</div><div class="empty-t">Belum ada transaksi</div><div class="empty-d">Isi form di atas atau muat data contoh untuk mulai belajar.</div><button class="btn btn-pri" onclick="loadContoh()">📋 Muat Data Contoh</button></div></td></tr>`;
+    return;
+  }
+  tb.innerHTML=TXS.map((t,i)=>`<tr>
+    <td style="color:var(--text3)">${i+1}</td>
+    <td>${t.tgl}</td><td>${t.ket}</td>
+    <td><span class="badge bg-blue">${t.debit}</span></td>
+    <td><span class="badge bg-amber">${t.kredit}</span></td>
+    <td class="tr" style="font-weight:500">${fmt(t.nom)}</td>
+    <td class="tc no-print">
+      <button class="btn btn-sec btn-sm" onclick="openEdit(${i})">✏️</button>
+      <button class="btn btn-del btn-sm" onclick="delTx(${i})">🗑️</button>
+    </td>
+  </tr>`).join('');
+}
+
+function delTx(i){
+  if(!confirm(`Hapus: "${TXS[i].ket}"?`))return;
+  TXS.splice(i,1); renderAll(); toast('🗑️ Dihapus','warn');
+}
+
+function openEdit(i){
+  editIdx=i; const t=TXS[i];
+  let dOpts='',kOpts='';
+  COA.forEach(a=>{
+    dOpts+=`<option value="${a.nama}"${a.nama===t.debit?' selected':''}>${a.nama}</option>`;
+    kOpts+=`<option value="${a.nama}"${a.nama===t.kredit?' selected':''}>${a.nama}</option>`;
+  });
+  $('editModalBody').innerHTML=`
+    <div class="g2" style="margin-bottom:10px">
+      <div class="fg"><label>Tanggal</label><input type="date" id="e-tgl" value="${t.tgl}"></div>
+      <div class="fg"><label>Keterangan</label><input type="text" id="e-ket" value="${t.ket}"></div>
+    </div>
+    <div class="g3">
+      <div class="fg"><label>Akun Debit</label><select id="e-debit">${dOpts}</select></div>
+      <div class="fg"><label>Akun Kredit</label><select id="e-kredit">${kOpts}</select></div>
+      <div class="fg"><label>Jumlah</label><div class="pfx-wrap"><span class="pfx">Rp</span><input type="number" id="e-nom" value="${t.nom}"></div></div>
+    </div>`;
+  $('editModal').classList.add('show');
+}
+
+function saveEdit(){
+  if(editIdx===null)return;
+  const tgl=$('e-tgl').value,ket=$('e-ket').value.trim(),debit=$('e-debit').value,kredit=$('e-kredit').value,nom=parseFloat($('e-nom').value)||0;
+  if(!tgl||!ket||nom<=0||debit===kredit){toast('⚠ Periksa isian kembali','err');return;}
+  TXS[editIdx]={...TXS[editIdx],tgl,ket,debit,kredit,nom};
+  TXS.sort((a,b)=>a.tgl.localeCompare(b.tgl));
+  closeModal(); renderAll(); toast('✓ Transaksi diperbarui','ok');
+}
+
+function closeModal(){$('editModal').classList.remove('show');editIdx=null;}
+function closeKorModal(){$('korModal').classList.remove('show');korFixData=null;}
+
+// ════════════════════════════════════
+// BUKU BESAR
+// ════════════════════════════════════
+function renderBB(){
+  const fv=$('bb-filter').value;
+  const s=getSaldoMap();
+  const used=new Set();
+  TXS.forEach(t=>{used.add(t.debit);used.add(t.kredit);});
+  const names=fv==='all'?[...used]:[fv];
+  const c=$('bb-content');
+  if(!names.length||TXS.length===0){c.innerHTML=`<div class="card"><div class="empty"><div class="empty-ico">📖</div><div class="empty-t">Belum ada data</div><div class="empty-d">Catat transaksi di Jurnal Umum terlebih dahulu.</div></div></div>`;return;}
+  const tipeBadge={aset:'bg-blue',liabilitas:'bg-red',ekuitas:'bg-green',pendapatan:'bg-green',beban:'bg-amber'};
+  c.innerHTML=COA.filter(a=>names.includes(a.nama)).map(akun=>{
+    const txs=TXS.filter(t=>t.debit===akun.nama||t.kredit===akun.nama);
+    if(!txs.length)return'';
+    let running=0;
+    const rows=txs.map(t=>{
+      const isD=t.debit===akun.nama;
+      running+=isD?t.nom:-t.nom;
+      return`<tr><td>${t.tgl}</td><td>${t.ket}</td><td class="tr">${isD?fmt(t.nom):'—'}</td><td class="tr">${!isD?fmt(t.nom):'—'}</td><td class="tr" style="font-weight:500;color:${running>=0?'var(--green)':'var(--red)'}">${fmt(running)}</td></tr>`;
+    }).join('');
+    return`<div class="card"><div class="card-hd">${akun.nama} <span class="badge ${tipeBadge[akun.tipe]||'bg-gray'}">${akun.tipe}</span><span style="margin-left:auto;font-size:13px;font-weight:600;color:${running>=0?'var(--green)':'var(--red)'}">${fmt(running)}</span></div>
+    <div class="tbl-wrap"><table><thead><tr><th>Tanggal</th><th>Keterangan</th><th class="tr">Debit</th><th class="tr">Kredit</th><th class="tr">Saldo</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+  }).join('');
+  if(!c.innerHTML.trim())c.innerHTML='<div class="card"><div class="card-bd" style="color:var(--text3);text-align:center;padding:20px">Tidak ada transaksi untuk akun ini.</div></div>';
+}
+
+// ════════════════════════════════════
+// NERACA SALDO
+// ════════════════════════════════════
+function renderNeracaSaldo(){
+  const s=getSaldoMap();
+  let td=0,tk=0;
+  const tipeBadge={aset:'bg-blue',liabilitas:'bg-red',ekuitas:'bg-green',pendapatan:'bg-green',beban:'bg-amber'};
+  const rows=COA.map(a=>{
+    const v=s[a.nama]||0;
+    if(Math.abs(v)<0.01)return null;
+    const d=v>0?v:0, k=v<0?Math.abs(v):0;
+    td+=d; tk+=k;
+    return`<tr><td style="font-family:monospace;color:var(--text3)">${a.kode}</td><td>${a.nama}</td><td><span class="badge ${tipeBadge[a.tipe]}">${a.tipe}</span></td><td class="tr">${d>0?fmt(d):'—'}</td><td class="tr">${k>0?fmt(k):'—'}</td></tr>`;
+  }).filter(Boolean).join('');
+  $('ns-body').innerHTML=rows||`<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text3)">Belum ada data</td></tr>`;
+  setTxt('ns-debit',fmt(td)); setTxt('ns-kredit',fmt(tk));
+  setTxt('ns-fd',fmt(td)); setTxt('ns-fk',fmt(tk));
+  const bal=Math.abs(td-tk)<1;
+  const st=$('ns-status');
+  st.style.color=bal?'var(--green)':'var(--red)';
+  st.textContent=TXS.length===0?'— Belum ada data —':(bal?'✓ Neraca saldo seimbang (Debit = Kredit)':'⚠ TIDAK SEIMBANG — ada kesalahan! Periksa halaman Koreksi');
+}
+
+// ════════════════════════════════════
+// KOREKSI OTOMATIS
+// ════════════════════════════════════
+function doKoreksi(){
+  const issues=[]; const s=getSaldoMap();
+  // per transaksi
+  TXS.forEach((t,i)=>{
+    if(t.debit===t.kredit)
+      issues.push({lv:'err',msg:`#${i+1} (${t.ket}): Akun debit dan kredit SAMA (${t.debit}). Transaksi tidak valid.`,fix:'swap',idx:i});
+    if(t.nom<=0)
+      issues.push({lv:'err',msg:`#${i+1} (${t.ket}): Nominal ${fmt(t.nom)} tidak valid (harus > 0).`,idx:i});
+    if(t.nom>10000000000)
+      issues.push({lv:'warn',msg:`#${i+1} (${t.ket}): Nominal ${fmt(t.nom)} sangat besar. Apakah ada kelebihan nol?`,fix:'editNom',idx:i});
+    if(t.nom>0&&t.nom<100)
+      issues.push({lv:'warn',msg:`#${i+1} (${t.ket}): Nominal ${fmt(t.nom)} sangat kecil. Periksa kembali.`,fix:'editNom',idx:i});
+    if(t.ket.length<4)
+      issues.push({lv:'info',msg:`#${i+1}: Keterangan "${t.ket}" terlalu singkat. Tambahkan detail agar mudah dilacak.`,fix:'editKet',idx:i});
+  });
+  // duplikat
+  for(let i=0;i<TXS.length;i++)for(let j=i+1;j<TXS.length;j++){
+    const a=TXS[i],b=TXS[j];
+    if(a.tgl===b.tgl&&a.debit===b.debit&&a.kredit===b.kredit&&a.nom===b.nom)
+      issues.push({lv:'err',msg:`#${i+1} dan #${j+1} adalah transaksi DUPLIKAT (${a.tgl}, ${a.debit}→${a.kredit}, ${fmt(a.nom)}).`,fix:'delDup',idx:j});
+  }
+  // neraca tidak seimbang
+  let td=0,tk=0;
+  COA.forEach(a=>{const v=s[a.nama]||0;if(v>0)td+=v;else tk+=Math.abs(v);});
+  if(TXS.length>0&&Math.abs(td-tk)>1)
+    issues.push({lv:'err',msg:`Neraca saldo tidak seimbang: Debit ${fmt(td)} ≠ Kredit ${fmt(tk)}. Selisih: ${fmt(Math.abs(td-tk))}.`});
+  return issues;
+}
+
+function renderKoreksi(){
+  const issues=doKoreksi();
+  const kritis=issues.filter(i=>i.lv==='err').length;
+  const warn=issues.filter(i=>i.lv==='warn').length;
+  const saran=issues.filter(i=>i.lv==='info').length;
+  setTxt('kor-kritis',kritis); setTxt('kor-warn',warn); setTxt('kor-saran',saran);
+  setTxt('kor-ok',Math.max(0,TXS.length-issues.filter(i=>i.idx!==undefined).length));
+
+  const c=$('kor-list');
+  if(!issues.length){
+    c.innerHTML=`<div class="empty"><div class="empty-ico">✅</div><div class="empty-t">${TXS.length===0?'Belum ada transaksi':'Semua transaksi valid!'}</div><div class="empty-d">${TXS.length===0?'Catat transaksi terlebih dahulu untuk diperiksa.':'Pencatatan Anda sudah benar. Lanjutkan ke laporan keuangan.'}</div></div>`;
+    return;
+  }
+  const iconMap={err:'🚨',warn:'⚠️',info:'💡'};
+  const colorMap={err:'var(--red)',warn:'var(--amber)',info:'var(--blue)'};
+  const bgMap={err:'var(--red-bg)',warn:'var(--amber-bg)',info:'var(--blue-bg)'};
+  c.innerHTML=issues.map(iss=>{
+    let fixBtn='';
+    if(iss.fix==='swap')fixBtn=`<button class="btn btn-warn btn-sm" onclick="korFix('swap',${iss.idx})">🔄 Tukar D/K</button>`;
+    else if(iss.fix==='editNom')fixBtn=`<button class="btn btn-warn btn-sm" onclick="korFix('editNom',${iss.idx})">✏️ Edit Nominal</button>`;
+    else if(iss.fix==='editKet')fixBtn=`<button class="btn btn-sec btn-sm" onclick="korFix('editKet',${iss.idx})">✏️ Edit Keterangan</button>`;
+    else if(iss.fix==='delDup')fixBtn=`<button class="btn btn-del btn-sm" onclick="korFix('delDup',${iss.idx})">🗑️ Hapus Duplikat</button>`;
+    const jurnalLink=iss.idx!==undefined?`<a href="#" onclick="goto('jurnal');hlRow(${iss.idx});return false" style="font-size:12px;color:var(--accent)">→ Lihat di jurnal</a>`:'';
+    return`<div class="kor-item" style="border-left:3px solid ${colorMap[iss.lv]};background:${bgMap[iss.lv]}">
+      <span class="kor-icon">${iconMap[iss.lv]}</span>
+      <div class="kor-body"><div class="kor-title">${iss.msg}</div><div class="kor-desc" style="margin-top:4px">${jurnalLink}</div></div>
+      <div class="kor-fix" style="display:flex;flex-direction:column;gap:4px">${fixBtn}</div>
+    </div>`;
+  }).join('');
+}
+
+function korFix(type,idx){
+  const t=TXS[idx];
+  if(type==='swap'){
+    if(!confirm(`Tukar posisi debit & kredit?\nDebit: ${t.debit} → ${t.kredit}\nKredit: ${t.kredit} → ${t.debit}`))return;
+    const tmp=t.debit; TXS[idx].debit=t.kredit; TXS[idx].kredit=tmp;
+    renderAll(); toast('✓ Debit & kredit sudah ditukar','ok');
+  } else if(type==='delDup'){
+    if(!confirm(`Hapus transaksi duplikat #${idx+1}: "${t.ket}"?`))return;
+    TXS.splice(idx,1); renderAll(); toast('✓ Duplikat dihapus','ok');
+  } else if(type==='editNom'){
+    korFixData={type,idx};
+    $('korModalTitle').textContent='✏️ Perbaiki Nominal';
+    $('korModalBody').innerHTML=`<div class="fg"><label>Nominal baru untuk: <b>${t.ket}</b></label>
+      <div class="pfx-wrap"><span class="pfx">Rp</span><input type="number" id="kf-nom" value="${t.nom}" style="padding-left:30px"></div>
+      <small style="color:var(--text3)">Saat ini: ${fmt(t.nom)}</small></div>`;
+    $('korModal').classList.add('show');
+  } else if(type==='editKet'){
+    korFixData={type,idx};
+    $('korModalTitle').textContent='✏️ Perbaiki Keterangan';
+    $('korModalBody').innerHTML=`<div class="fg"><label>Keterangan baru (min 5 karakter)</label>
+      <input type="text" id="kf-ket" value="${t.ket}" placeholder="Contoh: Penjualan tunai ke pelanggan A">
+      <small style="color:var(--text3)">Saat ini: "${t.ket}"</small></div>`;
+    $('korModal').classList.add('show');
+  }
+}
+
+function saveKorFix(){
+  if(!korFixData)return;
+  const {type,idx}=korFixData;
+  if(type==='editNom'){
+    const n=parseFloat($('kf-nom').value)||0;
+    if(n<=0){toast('Nominal harus > 0','err');return;}
+    TXS[idx].nom=n;
+  } else if(type==='editKet'){
+    const k=$('kf-ket').value.trim();
+    if(k.length<3){toast('Keterangan terlalu singkat','err');return;}
+    TXS[idx].ket=k;
+  }
+  closeKorModal(); renderAll(); toast('✓ Perbaikan diterapkan','ok');
+}
+
+function hlRow(idx){
+  setTimeout(()=>{
+    const rows=document.querySelectorAll('#j-body tr');
+    if(rows[idx]){rows[idx].classList.add('hl-row');rows[idx].scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>rows[idx].classList.remove('hl-row'),3000);}
+  },300);
+}
+
+// ════════════════════════════════════
+// LAPORAN LABA RUGI
+// ════════════════════════════════════
+function renderLabaRugi(){
+  const s=getSaldoMap();
+  let totPend=0,totBeban=0,totHPP=0;
+  const grups={};
+  COA.filter(a=>a.tipe==='pendapatan'||a.tipe==='beban').forEach(a=>{
+    const v=Math.abs(s[a.nama]||0);
+    if(v===0)return;
+    if(!grups[a.grup])grups[a.grup]={tipe:a.tipe,items:[]};
+    grups[a.grup].items.push({nama:a.nama,val:v});
+    if(a.tipe==='pendapatan')totPend+=v;
+    else{totBeban+=v; if(a.nama==='HPP')totHPP+=v;}
+  });
+  const laba=totPend-totBeban;
+  const labaKotor=totPend-totHPP;
+  setTxt('lr-pend',fmt(totPend)); setTxt('lr-beban',fmt(totBeban));
+  const le=$('lr-laba'); le.textContent=fmtN(laba); le.style.color=laba>=0?'var(--green)':'var(--red)';
+  $('lr-laba-m').style.borderTop=`3px solid ${laba>=0?'var(--green)':'var(--red)'}`;
+  const margin=totPend>0?(laba/totPend*100):0;
+  setTxt('lr-margin',(margin>=0?'':'-')+Math.abs(margin).toFixed(1)+'%');
+
+  let html='';
+  // Pendapatan
+  html+=`<div class="rpt-section-hd">I. PENDAPATAN</div>`;
+  const pendGrups=Object.entries(grups).filter(([,v])=>v.tipe==='pendapatan');
+  if(pendGrups.length){
+    pendGrups.forEach(([g,v])=>{
+      html+=`<div class="rpt-row ind" style="font-weight:500;color:var(--text2);font-size:12px;text-transform:uppercase">${g}</div>`;
+      v.items.forEach(i=>html+=`<div class="rpt-row ind2"><span>${i.nama}</span><span style="color:var(--green)">${fmt(i.val)}</span></div>`);
+    });
+  } else html+=`<div class="rpt-row ind" style="color:var(--text3)">Tidak ada pendapatan tercatat</div>`;
+  html+=`<div class="rpt-row sub-total"><span>Total Pendapatan</span><span style="color:var(--green)">${fmt(totPend)}</span></div>`;
+
+  // HPP
+  if(totHPP>0){
+    html+=`<div class="rpt-section-hd">II. BEBAN POKOK PENJUALAN</div>`;
+    html+=`<div class="rpt-row ind2"><span>Harga Pokok Penjualan (HPP)</span><span style="color:var(--red)">(${fmt(totHPP)})</span></div>`;
+    html+=`<div class="rpt-row sub-total"><span>Laba Kotor</span><span style="color:${labaKotor>=0?'var(--green)':'var(--red)'}">${fmtN(labaKotor)}</span></div>`;
+  }
+
+  // Beban Operasional
+  const bebanGrups=Object.entries(grups).filter(([,v])=>v.tipe==='beban');
+  if(bebanGrups.length){
+    html+=`<div class="rpt-section-hd">${totHPP>0?'III':'II'}. BEBAN OPERASIONAL & LAIN-LAIN</div>`;
+    bebanGrups.forEach(([g,v])=>{
+      if(g==='Beban Pokok')return;
+      html+=`<div class="rpt-row ind" style="font-weight:500;color:var(--text2);font-size:12px;text-transform:uppercase">${g}</div>`;
+      v.items.forEach(i=>html+=`<div class="rpt-row ind2"><span>${i.nama}</span><span style="color:var(--red)">(${fmt(i.val)})</span></div>`);
+    });
+    html+=`<div class="rpt-row sub-total"><span>Total Beban</span><span style="color:var(--red)">(${fmt(totBeban)})</span></div>`;
+  }
+
+  // Laba Bersih
+  html+=`<div class="rpt-row grand"><span>${laba>=0?'LABA BERSIH':'RUGI BERSIH'}</span><span>${fmtN(laba)}</span></div>`;
+  $('lr-content').innerHTML=html;
+}
+
+// ════════════════════════════════════
+// NERACA KEUANGAN
+// ════════════════════════════════════
+function renderNeracaKeu(){
+  const s=getSaldoMap();
+  const {pend,beban,ekuitas:ek}=calcTotals();
+  const laba=pend-beban;
+  const grups={};
+  COA.filter(a=>a.tipe==='aset'||a.tipe==='liabilitas'||a.tipe==='ekuitas').forEach(a=>{
+    const v=Math.abs(s[a.nama]||0);
+    if(!grups[a.grup])grups[a.grup]={tipe:a.tipe,items:[]};
+    if(v>0)grups[a.grup].items.push({nama:a.nama,val:v,normal:a.normal});
+  });
+  let totAset=0,totLiab=0,totEk=ek+laba;
+  COA.filter(a=>a.tipe==='aset').forEach(a=>totAset+=Math.abs(s[a.nama]||0));
+  COA.filter(a=>a.tipe==='liabilitas').forEach(a=>totLiab+=Math.abs(s[a.nama]||0));
+
+  setTxt('nk-aset',fmt(totAset)); setTxt('nk-liab',fmt(totLiab)); setTxt('nk-ek',fmt(totEk));
+  const bal=Math.abs(totAset-(totLiab+totEk))<1;
+  const nkst=$('nk-status');
+  nkst.style.color=bal?'var(--green)':'var(--red)';
+  nkst.textContent=TXS.length===0?'— Belum ada data —':(bal?'✓ Neraca keuangan seimbang':'⚠ Neraca tidak seimbang — lihat koreksi');
+
+  function renderSisi(tipe,color){
+    return Object.entries(grups).filter(([,v])=>v.tipe===tipe&&v.items.length).map(([g,v])=>`
+      <div class="rpt-row ind" style="font-weight:600;color:var(--text2);font-size:11px;text-transform:uppercase;letter-spacing:.4px">${g}</div>
+      ${v.items.map(i=>`<div class="rpt-row ind2"><span>${i.nama}</span><span>${fmt(i.val)}</span></div>`).join('')}
+    `).join('');
+  }
+
+  $('nk-content').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)">
+      <div style="background:var(--surface)">
+        <div class="rpt-section-hd" style="color:var(--blue)">ASET</div>
+        ${renderSisi('aset','var(--blue)')||'<div class="rpt-row ind" style="color:var(--text3)">Tidak ada aset</div>'}
+        <div class="rpt-row sub-total" style="color:var(--blue)"><span>Total Aset</span><span>${fmt(totAset)}</span></div>
+      </div>
+      <div style="background:var(--surface)">
+        <div class="rpt-section-hd" style="color:var(--red)">LIABILITAS & EKUITAS</div>
+        ${renderSisi('liabilitas','var(--red)')||'<div class="rpt-row ind" style="color:var(--text3)">Tidak ada liabilitas</div>'}
+        <div class="rpt-row sub-total" style="color:var(--red)"><span>Total Liabilitas</span><span>${fmt(totLiab)}</span></div>
+        <div class="rpt-section-hd" style="color:var(--green)">EKUITAS</div>
+        ${renderSisi('ekuitas','var(--green)')}
+        ${laba!==0?`<div class="rpt-row ind2"><span>Laba/(Rugi) Tahun Berjalan</span><span style="color:${laba>=0?'var(--green)':'var(--red)'}">${fmtN(laba)}</span></div>`:''}
+        <div class="rpt-row sub-total" style="color:var(--green)"><span>Total Ekuitas</span><span>${fmtN(totEk)}</span></div>
+        <div class="rpt-row grand"><span>TOTAL LIABILITAS & EKUITAS</span><span>${fmt(totLiab+totEk)}</span></div>
+      </div>
+    </div>`;
+}
+
+// ════════════════════════════════════
+// PERUBAHAN EKUITAS
+// ════════════════════════════════════
+function renderPerubahanEkuitas(){
+  const s=getSaldoMap();
+  const modal=Math.abs(s['Modal Pemilik']||0);
+  const prive=Math.abs(s['Prive']||0);
+  const labaditahan=Math.abs(s['Laba Ditahan']||0);
+  const {pend,beban}=calcTotals();
+  const laba=pend-beban;
+  const ekAwal=modal+labaditahan;
+  const ekAkhir=ekAwal+laba-prive;
+
+  $('pe-content').innerHTML=`
+    <div class="rpt-section-hd">LAPORAN PERUBAHAN EKUITAS</div>
+    <div class="rpt-row ind"><span>Modal Awal (Modal Pemilik)</span><span>${fmt(modal)}</span></div>
+    <div class="rpt-row ind"><span>Laba Ditahan Periode Sebelumnya</span><span>${fmt(labaditahan)}</span></div>
+    <div class="rpt-row sub-total"><span>Ekuitas Awal</span><span>${fmt(ekAwal)}</span></div>
+    <div class="rpt-section-hd">PENAMBAHAN</div>
+    <div class="rpt-row ind2"><span>Laba Bersih Periode Berjalan</span><span style="color:${laba>=0?'var(--green)':'var(--red)'}">${laba>=0?fmt(laba):'('+fmt(laba)+')'}</span></div>
+    <div class="rpt-row sub-total"><span>Total Penambahan</span><span style="color:${laba>=0?'var(--green)':'var(--red)'}">${laba>=0?fmt(laba):'('+fmt(laba)+')'}</span></div>
+    ${prive>0?`<div class="rpt-section-hd">PENGURANGAN</div><div class="rpt-row ind2"><span>Prive (Pengambilan Pribadi)</span><span style="color:var(--red)">(${fmt(prive)})</span></div><div class="rpt-row sub-total"><span>Total Pengurangan</span><span style="color:var(--red)">(${fmt(prive)})</span></div>`:''}
+    <div class="rpt-row grand"><span>EKUITAS AKHIR</span><span>${fmtN(ekAkhir)}</span></div>`;
+}
+
+// ════════════════════════════════════
+// ARUS KAS
+// ════════════════════════════════════
+function renderArusKas(){
+  const KAS_AKUN=['Kas','Bank'];
+  const ASET_TL=['Peralatan','Gedung','Kendaraan','Tanah'];
+  const MODAL_AKUN=['Modal Pemilik','Hutang Bank','Obligasi'];
+  let ops=0,inv=0,fin=0;
+  const opsRows=[],invRows=[],finRows=[];
+
+  TXS.forEach(t=>{
+    const kasD=KAS_AKUN.includes(t.debit), kasK=KAS_AKUN.includes(t.kredit);
+    if(!kasD&&!kasK)return;
+    const sign=kasD?1:-1;
+    const val=t.nom*sign;
+    // Investasi: beli/jual aset tidak lancar
+    if(ASET_TL.includes(kasD?t.kredit:t.debit)){
+      inv+=val; invRows.push({ket:t.ket,val});
+    // Pendanaan: modal & hutang jangka panjang
+    } else if(MODAL_AKUN.includes(kasD?t.kredit:t.debit)||MODAL_AKUN.includes(kasD?t.debit:t.kredit)){
+      fin+=val; finRows.push({ket:t.ket,val});
+    } else {
+      ops+=val; opsRows.push({ket:t.ket,val});
+    }
+  });
+
+  const net=ops+inv+fin;
+  setTxt('ak-ops',fmtN(ops)); $('ak-ops').style.color=ops>=0?'var(--green)':'var(--red)';
+  setTxt('ak-inv',fmtN(inv)); $('ak-inv').style.color=inv>=0?'var(--green)':'var(--red)';
+  setTxt('ak-fin',fmtN(fin)); $('ak-fin').style.color=fin>=0?'var(--green)':'var(--red)';
+  setTxt('ak-net',fmtN(net)); $('ak-net').style.color=net>=0?'var(--green)':'var(--red)';
+
+  function rptRows(rows){
+    if(!rows.length)return`<div class="rpt-row ind2" style="color:var(--text3)">Tidak ada aktivitas</div>`;
+    return rows.map(r=>`<div class="rpt-row ind2"><span>${r.ket}</span><span style="color:${r.val>=0?'var(--green)':'var(--red)'}">${fmtN(r.val)}</span></div>`).join('');
+  }
+  $('ak-content').innerHTML=`
+    <div class="rpt-section-hd">I. ARUS KAS DARI AKTIVITAS OPERASI</div>
+    ${rptRows(opsRows)}
+    <div class="rpt-row sub-total"><span>Kas Bersih dari Aktivitas Operasi</span><span style="color:${ops>=0?'var(--green)':'var(--red)'}">${fmtN(ops)}</span></div>
+    <div class="rpt-section-hd">II. ARUS KAS DARI AKTIVITAS INVESTASI</div>
+    ${rptRows(invRows)}
+    <div class="rpt-row sub-total"><span>Kas Bersih dari Aktivitas Investasi</span><span style="color:${inv>=0?'var(--green)':'var(--red)'}">${fmtN(inv)}</span></div>
+    <div class="rpt-section-hd">III. ARUS KAS DARI AKTIVITAS PENDANAAN</div>
+    ${rptRows(finRows)}
+    <div class="rpt-row sub-total"><span>Kas Bersih dari Aktivitas Pendanaan</span><span style="color:${fin>=0?'var(--green)':'var(--red)'}">${fmtN(fin)}</span></div>
+    <div class="rpt-row grand"><span>KENAIKAN/(PENURUNAN) BERSIH KAS</span><span>${fmtN(net)}</span></div>`;
+}
+
+// ════════════════════════════════════
+// DAFTAR AKUN (COA)
+// ════════════════════════════════════
+function renderCOA(){
+  const s=getSaldoMap();
+  const tipeOrder=['aset','liabilitas','ekuitas','pendapatan','beban'];
+  const tipeLbl={aset:'Aset',liabilitas:'Liabilitas',ekuitas:'Ekuitas',pendapatan:'Pendapatan',beban:'Beban'};
+  const tipeBadge={aset:'bg-blue',liabilitas:'bg-red',ekuitas:'bg-green',pendapatan:'bg-green',beban:'bg-amber'};
+  const tipeColor={aset:'var(--blue)',liabilitas:'var(--red)',ekuitas:'var(--green)',pendapatan:'var(--green)',beban:'var(--amber)'};
+  $('coa-content').innerHTML=tipeOrder.map(tipe=>{
+    const akuns=COA.filter(a=>a.tipe===tipe);
+    return`<div class="card"><div class="card-hd" style="color:${tipeColor[tipe]}">${tipeLbl[tipe]}</div>
+    <div class="tbl-wrap"><table><thead><tr><th>Kode</th><th>Nama Akun</th><th>Kategori</th><th>Normal</th><th class="tr">Saldo Saat Ini</th></tr></thead>
+    <tbody>${akuns.map(a=>{
+      const v=s[a.nama]||0;const abs=Math.abs(v);
+      return`<tr><td style="font-family:monospace;color:var(--text3)">${a.kode}</td><td style="font-weight:${abs>0?'500':'400'}">${a.nama}</td>
+      <td><span class="badge bg-gray" style="font-size:10px">${a.grup}</span></td>
+      <td><span class="badge ${a.normal==='D'?'bg-blue':'bg-amber'}">${a.normal==='D'?'Debit':'Kredit'}</span></td>
+      <td class="tr" style="font-weight:500;color:${abs>0?tipeColor[tipe]:'var(--text3)'}">${abs>0?fmt(abs):'—'}</td></tr>`;
+    }).join('')}</tbody></table></div></div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════
+// KONSEP
+// ════════════════════════════════════
+const KONSEP=[
+  {id:'aset',emoji:'🏦',title:'Aset',short:'Sumber daya ekonomi yang dimiliki perusahaan',
+   html:`<h3 style="margin-bottom:10px">🏦 Aset</h3><p style="color:var(--text2);font-size:13px;line-height:1.7;margin-bottom:8px">Aset adalah semua sumber daya yang dimiliki dan dikendalikan perusahaan yang diharapkan menghasilkan manfaat ekonomi di masa depan.</p>
+   <p style="color:var(--text2);font-size:13px;line-height:1.7;margin-bottom:8px"><b>Aset Lancar</b> — berubah jadi kas dalam 1 tahun: Kas, Bank, Piutang, Persediaan, Perlengkapan.</p>
+   <p style="color:var(--text2);font-size:13px;line-height:1.7;margin-bottom:8px"><b>Aset Tidak Lancar</b> — digunakan jangka panjang: Gedung, Peralatan, Kendaraan, Tanah.</p>
+   <p style="color:var(--text2);font-size:13px;line-height:1.7"><em>Contoh:</em> Beli laptop Rp 8 juta → Debit Peralatan Rp 8 juta, Kredit Kas Rp 8 juta.</p>
+   <div style="display:flex;gap:6px;margin-top:10px"><span class="badge bg-blue">Debit = Naik ↑</span><span class="badge bg-gray">Kredit = Turun ↓</span></div>`},
+  {id:'liabilitas',emoji:'💳',title:'Liabilitas',short:'Hutang / kewajiban kepada pihak luar',
+   html:`<h3 style="margin-bottom:10px">💳 Liabilitas</h3><p style="color:var(--text2);font-size:13px;line-height:1.7;margin-bottom:8px">Liabilitas adalah kewajiban perusahaan kepada pihak luar yang harus dipenuhi di masa depan dengan menggunakan aset perusahaan.</p>
+   <p style="color:var(--text2);font-size:13px;line-height:1.7;margin-bottom:8px"><b>Liabilitas Jangka Pendek</b> — jatuh tempo ≤ 1 tahun: Hutang Usaha, Hutang Gaji, Hutang Pajak.</p>
+   <p style="color:var(--text2);font-size:13px;line-height:1.7;margin-bottom:8px"><b>Liabilitas Jangka Panjang</b> — jatuh tempo > 1 tahun: Hutang Bank, Obligasi.</p>
+   <p style="color:var(--text2);font-size:13px;line-height:1.7"><em>Contoh:</em> Pinjam bank Rp 10 juta → Debit Kas Rp 10 juta, Kredit Hutang Bank Rp 10 juta.</p>
+   <div style="display:flex;gap:6px;margin-top:10px"><span class="badge bg-amber">Kredit = Naik ↑</span><span class="badge bg-gray">Debit = Turun ↓</span></div>`},
+  {id:'ekuitas',emoji:'💰',title:'Ekuitas',short:'Hak pemilik atas aset bersih perusahaan',
+   html:`<h3 style="margin-bottom:10px">💰 Ekuitas</h3><p style="color:var(--text2);font-size:13px;line-height:1.7;margin-bottom:8px">Ekuitas adalah hak residual pemilik atas aset setelah dikurangi semua liabilitas. Rumus: <b>Ekuitas = Aset − Liabilitas</b>.</p>
+   <p style="color:var(--text2);font-size:13px;line-height:1.7;margin-bottom:8px"><b>Modal Pemilik</b> — investasi langsung pemilik. <b>Laba Ditahan</b> — laba yang tidak dibagikan. <b>Prive</b> — penarikan pribadi pemilik (mengurangi ekuitas).</p>
+   <p style="color:var(--text2);font-size:13px;line-height:1.7"><em>Contoh:</em> Pemilik setor modal Rp 50 juta → Debit Kas Rp 50 juta, Kredit Modal Pemilik Rp 50 juta.</p>
+   <div style="display:flex;gap:6px;margin-top:10px"><span class="badge bg-green">Kredit = Naik ↑</span><span class="badge bg-gray">Debit = Turun ↓</span></div>`},
+  {id:'debitkredit',emoji:'⚖️',title:'Debit & Kredit',short:'Sistem pencatatan double-entry bookkeeping',
+   html:`<h3 style="margin-bottom:10px">⚖️ Debit & Kredit</h3><p style="color:var(--text2);font-size:13px;line-height:1.7;margin-bottom:8px">Dalam akuntansi, debit dan kredit <b>bukan berarti plus dan minus</b> — artinya bergantung pada tipe akun. Sistem ini disebut <em>double-entry bookkeeping</em>: setiap transaksi dicatat dua kali.</p>
+   <p style="color:var(--text2);font-size:13px;line-height:1.7;margin-bottom:8px"><b>Hukum besi:</b> Total Debit dalam satu transaksi HARUS selalu = Total Kredit.</p>
+   <p style="color:var(--text2);font-size:13px;line-height:1.7"><em>Contoh:</em> Bayar gaji Rp 3 juta → Debit Beban Gaji Rp 3 juta (beban naik) + Kredit Kas Rp 3 juta (aset turun).</p>`},
+  {id:'pendapatan',emoji:'📈',title:'Pendapatan',short:'Penghasilan dari kegiatan usaha utama',
+   html:`<h3 style="margin-bottom:10px">📈 Pendapatan</h3><p style="color:var(--text2);font-size:13px;line-height:1.7;margin-bottom:8px">Pendapatan adalah penghasilan yang diperoleh dari kegiatan usaha dan meningkatkan ekuitas pemilik.</p>
+   <p style="color:var(--text2);font-size:13px;line-height:1.7;margin-bottom:8px"><b>Pendapatan Jasa</b> — dari pelayanan jasa kepada pelanggan. <b>Pendapatan Penjualan</b> — dari penjualan barang dagangan.</p>
+   <p style="color:var(--text2);font-size:13px;line-height:1.7"><em>Contoh:</em> Terima pembayaran jasa konsultasi Rp 5 juta tunai → Debit Kas Rp 5 juta, Kredit Pendapatan Jasa Rp 5 juta.</p>
+   <div style="display:flex;gap:6px;margin-top:10px"><span class="badge bg-green">Kredit = Naik ↑</span><span class="badge bg-gray">Debit = Turun ↓ (jarang)</span></div>`},
+  {id:'beban',emoji:'📉',title:'Beban',short:'Pengorbanan ekonomi untuk menghasilkan pendapatan',
+   html:`<h3 style="margin-bottom:10px">📉 Beban</h3><p style="color:var(--text2);font-size:13px;line-height:1.7;margin-bottom:8px">Beban adalah pengorbanan ekonomi yang dikeluarkan untuk menghasilkan pendapatan. Beban mengurangi ekuitas pemilik.</p>
+   <p style="color:var(--text2);font-size:13px;line-height:1.7;margin-bottom:8px"><b>Beban Operasional:</b> Gaji, Sewa, Listrik, Iklan, Transportasi, dll.<br><b>HPP:</b> Biaya langsung untuk produk yang dijual.</p>
+   <p style="color:var(--text2);font-size:13px;line-height:1.7"><em>Contoh:</em> Bayar sewa kantor Rp 2 juta → Debit Beban Sewa Rp 2 juta, Kredit Kas Rp 2 juta.</p>
+   <div style="display:flex;gap:6px;margin-top:10px"><span class="badge bg-amber">Debit = Naik ↑</span><span class="badge bg-gray">Kredit = Turun ↓ (jarang)</span></div>`},
+];
+let activeKons=null;
+function renderKonsep(){
+  $('kons-grid').innerHTML=KONSEP.map(k=>`
+    <div class="kons-card${activeKons===k.id?' act':''}" onclick="toggleKons('${k.id}')">
+      <div style="font-size:22px;margin-bottom:6px">${k.emoji}</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:3px">${k.title}</div>
+      <div style="font-size:12px;color:var(--text2)">${k.short}</div>
+    </div>`).join('');
+}
+function toggleKons(id){
+  const kd=$('kons-detail'),kb=$('kons-detail-body');
+  if(activeKons===id){activeKons=null;kd.classList.remove('show');renderKonsep();return;}
+  activeKons=id;
+  const k=KONSEP.find(x=>x.id===id);
+  kb.innerHTML=k.html;
+  kd.classList.add('show');
+  renderKonsep();
+}
+
+// ════════════════════════════════════
+// CONTOH DATA
+// ════════════════════════════════════
+function loadContoh(){
+  TXS=[
+    {id:1,tgl:'2025-06-01',ket:'Setor modal awal pemilik',             debit:'Kas',                 kredit:'Modal Pemilik',       nom:50000000},
+    {id:2,tgl:'2025-06-02',ket:'Pinjam modal tambahan dari bank',       debit:'Bank',                kredit:'Hutang Bank',          nom:20000000},
+    {id:3,tgl:'2025-06-03',ket:'Beli peralatan kantor secara tunai',    debit:'Peralatan',           kredit:'Kas',                  nom:8000000},
+    {id:4,tgl:'2025-06-04',ket:'Bayar sewa kantor bulan Juni',          debit:'Beban Sewa',          kredit:'Kas',                  nom:2000000},
+    {id:5,tgl:'2025-06-05',ket:'Beli persediaan bahan baku kredit',     debit:'Persediaan',          kredit:'Hutang Usaha',         nom:5000000},
+    {id:6,tgl:'2025-06-07',ket:'Penjualan jasa ke PT Maju Jaya tunai',  debit:'Kas',                 kredit:'Pendapatan Jasa',      nom:15000000},
+    {id:7,tgl:'2025-06-09',ket:'Penjualan jasa ke CV Berkah (piutang)', debit:'Piutang Usaha',       kredit:'Pendapatan Jasa',      nom:10000000},
+    {id:8,tgl:'2025-06-10',ket:'Bayar gaji karyawan bulan Juni',        debit:'Beban Gaji',          kredit:'Kas',                  nom:5500000},
+    {id:9,tgl:'2025-06-11',ket:'Bayar listrik dan internet',            debit:'Beban Listrik',       kredit:'Kas',                  nom:750000},
+    {id:10,tgl:'2025-06-12',ket:'Terima pelunasan piutang dari CV Berkah',debit:'Kas',               kredit:'Piutang Usaha',        nom:10000000},
+    {id:11,tgl:'2025-06-13',ket:'Bayar hutang usaha ke supplier',       debit:'Hutang Usaha',        kredit:'Kas',                  nom:5000000},
+    {id:12,tgl:'2025-06-14',ket:'Bayar biaya iklan media sosial',       debit:'Beban Iklan',         kredit:'Bank',                 nom:500000},
+    {id:13,tgl:'2025-06-15',ket:'Prive — pengambilan pribadi pemilik',  debit:'Prive',               kredit:'Kas',                  nom:1000000},
+    {id:14,tgl:'2025-06-16',ket:'Penjualan barang dagangan tunai',      debit:'Kas',                 kredit:'Pendapatan Penjualan', nom:8000000},
+    {id:15,tgl:'2025-06-16',ket:'HPP barang yang terjual',              debit:'HPP',                 kredit:'Persediaan',           nom:3000000},
+    {id:16,tgl:'2025-06-18',ket:'Bayar angsuran hutang bank',           debit:'Hutang Bank',         kredit:'Bank',                 nom:2000000},
+    {id:17,tgl:'2025-06-20',ket:'Bayar beban transportasi operasional', debit:'Beban Transportasi',  kredit:'Kas',                  nom:300000},
+  ];
+  renderAll(); toast('📋 17 data contoh dimuat!','ok');
+}
+
+function clearAll(){
+  if(!TXS.length)return;
+  if(!confirm('Yakin hapus semua transaksi? Tidak dapat dibatalkan.'))return;
+  TXS=[]; renderAll(); toast('🗑️ Semua data dihapus','warn');
+}
+
+function exportCSV(){
+  if(!TXS.length){toast('Tidak ada data','err');return;}
+  const hdr='Tanggal,Keterangan,Akun Debit,Akun Kredit,Nominal\n';
+  const rows=TXS.map(t=>`${t.tgl},"${t.ket}","${t.debit}","${t.kredit}",${t.nom}`).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([hdr+rows],{type:'text/csv;charset=utf-8;'}));
+  a.download='jurnal-akunsimple.csv'; a.click();
+  toast('⬇️ CSV diunduh','ok');
+}
+
+// ════════════════════════════════════
+// LATIHAN SOAL
+// ════════════════════════════════════
+const SOAL_BANK = {
+  mudah: [
+    {
+      tipe:'pilihan',
+      soal:'Pak Budi membuka usaha baru dan menyetor uang tunai Rp 10.000.000 sebagai modal awal. Akun manakah yang di-DEBIT?',
+      pilihan:['Modal Pemilik','Kas','Hutang Usaha','Beban Gaji'],
+      jawaban:'Kas',
+      penjelasan:'Kas di-DEBIT karena uang tunai masuk (aset bertambah). Modal Pemilik di-KREDIT karena modal/ekuitas bertambah. Ingat: Aset naik = Debit.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Perusahaan membeli perlengkapan kantor seharga Rp 500.000 secara tunai. Akun manakah yang di-KREDIT?',
+      pilihan:['Perlengkapan','Beban Perlengkapan','Kas','Peralatan'],
+      jawaban:'Kas',
+      penjelasan:'Kas di-KREDIT karena uang keluar (aset berkurang). Perlengkapan di-DEBIT karena kita mendapat barang (aset bertambah).'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Mana yang termasuk ASET LANCAR?',
+      pilihan:['Gedung','Kendaraan','Piutang Usaha','Peralatan'],
+      jawaban:'Piutang Usaha',
+      penjelasan:'Aset Lancar adalah aset yang bisa diubah menjadi kas dalam waktu 1 tahun. Piutang Usaha bisa ditagih dalam waktu dekat. Gedung, Kendaraan, dan Peralatan adalah Aset Tidak Lancar.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Rumus persamaan dasar akuntansi yang benar adalah...',
+      pilihan:['Aset = Liabilitas - Ekuitas','Aset + Liabilitas = Ekuitas','Aset = Liabilitas + Ekuitas','Ekuitas = Aset + Liabilitas'],
+      jawaban:'Aset = Liabilitas + Ekuitas',
+      penjelasan:'Persamaan dasar akuntansi: ASET = LIABILITAS + EKUITAS. Artinya, semua kekayaan perusahaan (aset) berasal dari hutang (liabilitas) ditambah modal sendiri (ekuitas).'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Perusahaan menerima pendapatan jasa Rp 2.000.000 secara tunai. Akun Pendapatan Jasa di...',
+      pilihan:['Debit, karena pendapatan bertambah','Kredit, karena pendapatan bertambah','Debit, karena kas masuk','Kredit, karena kas keluar'],
+      jawaban:'Kredit, karena pendapatan bertambah',
+      penjelasan:'Pendapatan memiliki saldo normal KREDIT. Saat pendapatan bertambah, dicatat di sisi Kredit. Sementara Kas di-Debit karena uang masuk (aset bertambah).'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Membayar gaji karyawan Rp 3.000.000 tunai. Mana jurnal yang BENAR?',
+      pilihan:['Debit Kas, Kredit Beban Gaji','Debit Beban Gaji, Kredit Kas','Debit Hutang Gaji, Kredit Kas','Debit Modal, Kredit Beban Gaji'],
+      jawaban:'Debit Beban Gaji, Kredit Kas',
+      penjelasan:'Beban Gaji di-DEBIT (beban bertambah). Kas di-KREDIT (uang keluar, aset berkurang). Ingat: Beban saldo normal Debit — saat naik dicatat Debit.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Apa yang dimaksud dengan LIABILITAS?',
+      pilihan:['Kekayaan yang dimiliki perusahaan','Hak pemilik atas aset','Kewajiban/hutang kepada pihak luar','Penghasilan dari penjualan'],
+      jawaban:'Kewajiban/hutang kepada pihak luar',
+      penjelasan:'Liabilitas adalah kewajiban atau hutang perusahaan kepada pihak luar (kreditur, pemasok, bank, dll.) yang harus dilunasi di masa depan.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Perusahaan membeli kendaraan Rp 50.000.000 secara kredit (hutang bank). Akun yang di-KREDIT adalah...',
+      pilihan:['Kendaraan','Kas','Hutang Bank','Beban Penyusutan'],
+      jawaban:'Hutang Bank',
+      penjelasan:'Kendaraan di-DEBIT (aset bertambah). Hutang Bank di-KREDIT (liabilitas bertambah, karena kita berhutang ke bank). Tidak ada kas keluar karena dibeli secara kredit.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Mana yang termasuk EKUITAS?',
+      pilihan:['Kas','Piutang Usaha','Modal Pemilik','Hutang Usaha'],
+      jawaban:'Modal Pemilik',
+      penjelasan:'Ekuitas adalah hak pemilik atas aset perusahaan. Contoh akun ekuitas: Modal Pemilik, Laba Ditahan, Prive. Kas & Piutang adalah Aset. Hutang Usaha adalah Liabilitas.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Saldo normal akun BEBAN adalah...',
+      pilihan:['Kredit','Debit','Bisa keduanya','Tidak memiliki saldo normal'],
+      jawaban:'Debit',
+      penjelasan:'Beban memiliki saldo normal DEBIT. Saat beban bertambah dicatat di sisi Debit, saat berkurang di sisi Kredit. Beban mengurangi ekuitas pemilik.'
+    }
+  ],
+
+  menengah: [
+    {
+      tipe:'pilihan',
+      soal:'CV Maju membeli persediaan barang dagangan Rp 8.000.000, dibayar Rp 3.000.000 tunai dan sisanya kredit. Jurnal yang benar adalah...',
+      pilihan:[
+        'Debit Persediaan 8jt | Kredit Kas 8jt',
+        'Debit Persediaan 8jt | Kredit Kas 3jt + Hutang Usaha 5jt',
+        'Debit Persediaan 3jt | Kredit Kas 3jt',
+        'Debit Kas 3jt + Hutang 5jt | Kredit Persediaan 8jt'
+      ],
+      jawaban:'Debit Persediaan 8jt | Kredit Kas 3jt + Hutang Usaha 5jt',
+      penjelasan:'Persediaan bertambah Rp 8jt (Debit). Dibayar tunai Rp 3jt → Kas berkurang (Kredit 3jt). Sisa Rp 5jt belum dibayar → Hutang Usaha bertambah (Kredit 5jt). Total Debit = Total Kredit = Rp 8jt ✓'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Neraca Saldo menunjukkan Total Debit Rp 45.000.000 dan Total Kredit Rp 42.000.000. Apa artinya?',
+      pilihan:[
+        'Perusahaan untung Rp 3.000.000',
+        'Ada kesalahan dalam pencatatan',
+        'Perusahaan punya ekuitas Rp 3jt',
+        'Normal, selisih wajar terjadi'
+      ],
+      jawaban:'Ada kesalahan dalam pencatatan',
+      penjelasan:'Dalam neraca saldo, Total Debit HARUS SELALU SAMA dengan Total Kredit. Jika tidak sama (selisih Rp 3jt), pasti ada kesalahan: transaksi terlewat, salah jumlah, atau dicatat hanya satu sisi.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Perusahaan jasa menerima uang muka dari pelanggan Rp 5.000.000 untuk jasa yang belum dikerjakan. Jurnal yang tepat?',
+      pilihan:[
+        'Debit Kas | Kredit Pendapatan Jasa',
+        'Debit Pendapatan Jasa | Kredit Kas',
+        'Debit Kas | Kredit Pendapatan Diterima Dimuka',
+        'Debit Piutang | Kredit Pendapatan Jasa'
+      ],
+      jawaban:'Debit Kas | Kredit Pendapatan Diterima Dimuka',
+      penjelasan:'Uang muka untuk jasa yang BELUM dikerjakan bukan pendapatan dulu — itu adalah KEWAJIBAN (Liabilitas). Dicatat sebagai "Pendapatan Diterima Dimuka". Baru diakui sebagai pendapatan saat jasa selesai dikerjakan.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Laba Bersih perusahaan bulan ini Rp 12.000.000. Pemilik mengambil uang pribadi (Prive) Rp 2.000.000. Berapa kenaikan bersih ekuitas?',
+      pilihan:['Rp 14.000.000','Rp 12.000.000','Rp 10.000.000','Rp 2.000.000'],
+      jawaban:'Rp 10.000.000',
+      penjelasan:'Ekuitas bertambah dari Laba Rp 12jt, tapi berkurang karena Prive Rp 2jt. Kenaikan bersih = Rp 12jt - Rp 2jt = Rp 10.000.000. Prive selalu mengurangi ekuitas pemilik.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Perusahaan menjual barang dagangan Rp 10.000.000 (HPP Rp 6.000.000) secara tunai. Berapa Laba Kotor?',
+      pilihan:['Rp 10.000.000','Rp 6.000.000','Rp 4.000.000','Rp 16.000.000'],
+      jawaban:'Rp 4.000.000',
+      penjelasan:'Laba Kotor = Pendapatan Penjualan - HPP = Rp 10jt - Rp 6jt = Rp 4.000.000. Laba Kotor belum memperhitungkan beban operasional (gaji, sewa, dll). Laba Bersih = Laba Kotor - Beban Operasional.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Akun Piutang Usaha memiliki saldo Debit Rp 8.000.000. Kemudian pelanggan membayar Rp 5.000.000. Saldo Piutang setelah pembayaran adalah...',
+      pilihan:['Rp 13.000.000 (Debit)','Rp 3.000.000 (Kredit)','Rp 3.000.000 (Debit)','Rp 5.000.000 (Kredit)'],
+      jawaban:'Rp 3.000.000 (Debit)',
+      penjelasan:'Saat pelanggan bayar: Debit Kas Rp 5jt, Kredit Piutang Usaha Rp 5jt (piutang berkurang). Saldo Piutang = Rp 8jt - Rp 5jt = Rp 3.000.000 Debit. Piutang saldo normal Debit, jadi masih Debit.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Manakah yang termasuk laporan keuangan utama (PSAK)?',
+      pilihan:[
+        'Neraca Saldo, Buku Besar, Jurnal Umum',
+        'Laporan Laba Rugi, Neraca, Laporan Arus Kas',
+        'Jurnal Umum, Neraca Keuangan, Laporan Penjualan',
+        'Buku Besar, Laporan Laba, Laporan Pajak'
+      ],
+      jawaban:'Laporan Laba Rugi, Neraca, Laporan Arus Kas',
+      penjelasan:'4 Laporan Keuangan Utama: (1) Laporan Laba Rugi, (2) Neraca Keuangan/Laporan Posisi Keuangan, (3) Laporan Perubahan Ekuitas, (4) Laporan Arus Kas. Neraca Saldo dan Buku Besar adalah ALAT bantu, bukan laporan keuangan final.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Perusahaan membayar premi asuransi Rp 12.000.000 untuk 12 bulan ke depan. Pada bulan pertama, berapa yang diakui sebagai beban?',
+      pilihan:['Rp 12.000.000','Rp 6.000.000','Rp 1.000.000','Rp 0'],
+      jawaban:'Rp 1.000.000',
+      penjelasan:'Prinsip Matching (akrual): beban diakui sesuai periode manfaatnya. Rp 12jt untuk 12 bulan = Rp 1jt/bulan. Saat dibayar: Debit Asuransi Dibayar Dimuka Rp 12jt. Tiap bulan: Debit Beban Asuransi Rp 1jt, Kredit Asuransi Dibayar Dimuka Rp 1jt.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Manakah pernyataan tentang Laporan Arus Kas yang BENAR?',
+      pilihan:[
+        'Membeli gedung masuk arus kas operasi',
+        'Menerima pinjaman bank masuk arus kas investasi',
+        'Membayar gaji masuk arus kas operasi',
+        'Membayar dividen masuk arus kas operasi'
+      ],
+      jawaban:'Membayar gaji masuk arus kas operasi',
+      penjelasan:'Arus Kas Operasi: kegiatan usaha sehari-hari (gaji, listrik, penjualan). Arus Kas Investasi: beli/jual aset jangka panjang (gedung, peralatan). Arus Kas Pendanaan: pinjaman bank, modal, dividen.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Total Aset perusahaan Rp 80.000.000, Total Liabilitas Rp 30.000.000. Berapa ekuitas pemilik?',
+      pilihan:['Rp 110.000.000','Rp 80.000.000','Rp 50.000.000','Rp 30.000.000'],
+      jawaban:'Rp 50.000.000',
+      penjelasan:'Dari persamaan Aset = Liabilitas + Ekuitas, maka: Ekuitas = Aset - Liabilitas = Rp 80jt - Rp 30jt = Rp 50.000.000. Ini adalah nilai bersih kepemilikan pemilik atas bisnis.'
+    }
+  ],
+
+  susah: [
+    {
+      tipe:'pilihan',
+      soal:'PT Sejahtera memiliki data: Pendapatan Rp 120jt, HPP Rp 70jt, Beban Operasional Rp 25jt, Beban Bunga Rp 5jt, Pajak 25%. Berapa Laba Bersih setelah pajak?',
+      pilihan:['Rp 20.000.000','Rp 15.000.000','Rp 25.000.000','Rp 10.000.000'],
+      jawaban:'Rp 15.000.000',
+      penjelasan:'Laba Kotor = 120jt - 70jt = 50jt. Laba Operasi = 50jt - 25jt = 25jt. Laba Sebelum Pajak = 25jt - 5jt (bunga) = 20jt. Pajak = 20jt × 25% = 5jt. Laba Bersih = 20jt - 5jt = Rp 15.000.000.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Perusahaan punya piutang tak tertagih Rp 2.000.000. Dengan metode penghapusan langsung, jurnal yang dibuat adalah...',
+      pilihan:[
+        'Debit Kas 2jt | Kredit Piutang 2jt',
+        'Debit Cadangan Kerugian Piutang 2jt | Kredit Piutang 2jt',
+        'Debit Beban Piutang Tak Tertagih 2jt | Kredit Piutang Usaha 2jt',
+        'Debit Piutang 2jt | Kredit Pendapatan 2jt'
+      ],
+      jawaban:'Debit Beban Piutang Tak Tertagih 2jt | Kredit Piutang Usaha 2jt',
+      penjelasan:'Metode Penghapusan Langsung: saat piutang dipastikan tidak dapat ditagih, langsung dibebankan. Debit Beban Piutang Tak Tertagih (beban bertambah) dan Kredit Piutang Usaha (piutang berkurang).'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Aset tetap dibeli Rp 50jt, umur ekonomis 5 tahun, nilai residu Rp 5jt. Dengan metode garis lurus, beban penyusutan per tahun adalah...',
+      pilihan:['Rp 10.000.000','Rp 9.000.000','Rp 5.000.000','Rp 45.000.000'],
+      jawaban:'Rp 9.000.000',
+      penjelasan:'Penyusutan Garis Lurus = (Harga Perolehan - Nilai Residu) ÷ Umur Ekonomis = (50jt - 5jt) ÷ 5 = 45jt ÷ 5 = Rp 9.000.000/tahun. Jurnal: Debit Beban Penyusutan 9jt | Kredit Akumulasi Penyusutan 9jt.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Pada konsep AKRUAL, kapan pendapatan diakui?',
+      pilihan:[
+        'Saat uang diterima',
+        'Saat jasa/barang diserahkan, terlepas uang sudah diterima atau belum',
+        'Saat kontrak ditandatangani',
+        'Saat faktur dikirim'
+      ],
+      jawaban:'Saat jasa/barang diserahkan, terlepas uang sudah diterima atau belum',
+      penjelasan:'Basis Akrual: pendapatan diakui saat earned (jasa/barang diserahkan), bukan saat kas diterima. Jika jasa selesai tapi belum dibayar → Debit Piutang, Kredit Pendapatan. Ini berbeda dengan basis kas yang mengakui saat uang diterima.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Rasio Lancar (Current Ratio) perusahaan = 0,8. Apa artinya?',
+      pilihan:[
+        'Perusahaan sangat likuid',
+        'Aset lancar tidak cukup menutupi hutang jangka pendek',
+        'Perusahaan untung 80%',
+        'Liabilitas lebih kecil dari aset'
+      ],
+      jawaban:'Aset lancar tidak cukup menutupi hutang jangka pendek',
+      penjelasan:'Current Ratio = Aset Lancar ÷ Liabilitas Jangka Pendek. Jika < 1 (misalnya 0,8), artinya setiap Rp 1 hutang lancar hanya dijamin Rp 0,80 aset lancar — kondisi TIDAK SEHAT. Idealnya Current Ratio > 1,5 - 2.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Perusahaan menggunakan metode FIFO untuk persediaan. Harga beli batch 1: Rp 10.000/unit (100 unit), batch 2: Rp 12.000/unit (100 unit). Terjual 120 unit. Berapa HPP?',
+      pilihan:['Rp 1.240.000','Rp 1.200.000','Rp 1.440.000','Rp 1.220.000'],
+      jawaban:'Rp 1.240.000',
+      penjelasan:'FIFO = First In First Out: barang yang masuk pertama, keluar pertama. 120 unit terjual: 100 unit dari batch 1 (×Rp 10.000 = Rp 1.000.000) + 20 unit dari batch 2 (×Rp 12.000 = Rp 240.000). HPP = Rp 1.000.000 + Rp 240.000 = Rp 1.240.000.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Jurnal penyesuaian dibuat karena...',
+      pilihan:[
+        'Ada kesalahan dalam jurnal umum',
+        'Memastikan pendapatan dan beban diakui pada periode yang tepat (konsep akrual)',
+        'Menyesuaikan kurs valuta asing',
+        'Membetulkan kesalahan penulisan'
+      ],
+      jawaban:'Memastikan pendapatan dan beban diakui pada periode yang tepat (konsep akrual)',
+      penjelasan:'Jurnal Penyesuaian (Adjusting Entries) dibuat di akhir periode untuk: (1) mengakui beban yang sudah terjadi tapi belum dicatat, (2) mengakui pendapatan yang sudah earned tapi belum dicatat, (3) menyesuaikan nilai aset (penyusutan, perlengkapan terpakai, dll).'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Return on Equity (ROE) perusahaan = 20%. Apa artinya?',
+      pilihan:[
+        'Perusahaan memiliki aset Rp 20jt',
+        'Setiap Rp 100 ekuitas menghasilkan Rp 20 laba bersih',
+        'Tingkat hutang perusahaan 20%',
+        'Margin laba kotor 20%'
+      ],
+      jawaban:'Setiap Rp 100 ekuitas menghasilkan Rp 20 laba bersih',
+      penjelasan:'ROE = Laba Bersih ÷ Ekuitas × 100%. ROE 20% artinya setiap Rp 100 yang diinvestasikan pemilik menghasilkan Rp 20 laba bersih. Semakin tinggi ROE, semakin efisien perusahaan menggunakan modal.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Perusahaan menerima sewa dibayar dimuka dari penyewa Rp 6.000.000 untuk 6 bulan. Di akhir bulan pertama, jurnal penyesuaian yang dibuat adalah...',
+      pilihan:[
+        'Debit Kas 1jt | Kredit Pendapatan Sewa 1jt',
+        'Debit Pendapatan Diterima Dimuka 1jt | Kredit Pendapatan Sewa 1jt',
+        'Debit Pendapatan Sewa 1jt | Kredit Kas 1jt',
+        'Tidak ada jurnal penyesuaian'
+      ],
+      jawaban:'Debit Pendapatan Diterima Dimuka 1jt | Kredit Pendapatan Sewa 1jt',
+      penjelasan:'Saat terima uang muka: Debit Kas 6jt, Kredit Pendapatan Diterima Dimuka 6jt (belum earned). Tiap bulan, saat sewa sudah "digunakan" 1 bulan: Debit Pendapatan Diterima Dimuka Rp 1jt (kewajiban berkurang) | Kredit Pendapatan Sewa Rp 1jt (sekarang earned).'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Debt to Equity Ratio (DER) perusahaan = 2,5. Apa risikonya?',
+      pilihan:[
+        'Perusahaan terlalu banyak modal sendiri',
+        'Perusahaan sangat likuid',
+        'Perusahaan sangat bergantung pada hutang (leverage tinggi)',
+        'Tidak ada risiko, DER 2,5 sangat ideal'
+      ],
+      jawaban:'Perusahaan sangat bergantung pada hutang (leverage tinggi)',
+      penjelasan:'DER = Total Liabilitas ÷ Ekuitas. DER 2,5 artinya untuk setiap Rp 1 modal sendiri, ada Rp 2,50 hutang — leverage tinggi. Risikonya: beban bunga besar, rentan gagal bayar saat pendapatan turun. DER ideal umumnya < 1 hingga 1,5.'
+    }
+  ],
+
+  ahli: [
+    {
+      tipe:'pilihan',
+      soal:'Perusahaan menggunakan metode penyusutan Double Declining Balance. Aset Rp 100jt, umur 5 tahun. Beban penyusutan tahun ke-2 adalah...',
+      pilihan:['Rp 40.000.000','Rp 24.000.000','Rp 20.000.000','Rp 16.000.000'],
+      jawaban:'Rp 24.000.000',
+      penjelasan:'DDB Rate = 2 × (1/Umur) = 2/5 = 40%. Tahun 1: 100jt × 40% = 40jt. Nilai Buku awal tahun 2 = 100jt - 40jt = 60jt. Tahun 2: 60jt × 40% = Rp 24.000.000. DDB menghasilkan beban penyusutan yang menurun setiap tahun.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'PT Alpha memiliki: Kas Rp 10jt, Piutang Rp 15jt, Persediaan Rp 20jt, Hutang Lancar Rp 18jt. Berapa Quick Ratio (Acid Test)?',
+      pilihan:['2,50','1,39','1,11','0,56'],
+      jawaban:'1,39',
+      penjelasan:'Quick Ratio = (Aset Lancar - Persediaan) ÷ Hutang Lancar = (10+15+20-20) ÷ 18 = 25 ÷ 18 = 1,39. Quick Ratio mengecualikan persediaan karena kurang likuid. Quick Ratio > 1 berarti perusahaan mampu membayar hutang lancar tanpa menjual persediaan.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Goodwill dalam akuntansi diakui saat...',
+      pilihan:[
+        'Perusahaan memiliki merek yang terkenal',
+        'Akuisisi perusahaan lain dengan harga di atas nilai buku aset bersih',
+        'Perusahaan memiliki pelanggan setia',
+        'Keuntungan penjualan melebihi ekspektasi'
+      ],
+      jawaban:'Akuisisi perusahaan lain dengan harga di atas nilai buku aset bersih',
+      penjelasan:'Goodwill hanya diakui dalam akuntansi saat terjadi akuisisi/pembelian bisnis. Goodwill = Harga Akuisisi - Nilai Wajar Aset Bersih. Goodwill "internal" (reputasi yang dibangun sendiri) tidak boleh dicatat sebagai aset per PSAK.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Manakah yang merupakan perbedaan TEMPORARY vs PERMANENT difference dalam pajak tangguhan?',
+      pilihan:[
+        'Temporary: beda waktu yang akan terbalik; Permanent: tidak akan pernah terbalik',
+        'Temporary: untuk perusahaan kecil; Permanent: untuk perusahaan besar',
+        'Tidak ada perbedaan keduanya',
+        'Permanent lebih sering terjadi dari Temporary'
+      ],
+      jawaban:'Temporary: beda waktu yang akan terbalik; Permanent: tidak akan pernah terbalik',
+      penjelasan:'Temporary Differences: perbedaan pengakuan antara akuntansi dan pajak yang akan terbalik di masa depan (menimbulkan Pajak Tangguhan/Deferred Tax). Permanent Differences: perbedaan yang tidak pernah terbalik (misal: denda tidak dapat dikurangi pajak). Hanya temporary diff yang menimbulkan DTA/DTL.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Dalam konsolidasi laporan keuangan, eliminasi transaksi antar perusahaan (intercompany) diperlukan karena...',
+      pilihan:[
+        'Mempermudah audit',
+        'Menghindari double counting pendapatan/beban dalam grup',
+        'Meningkatkan laba konsolidasi',
+        'Memenuhi persyaratan pajak'
+      ],
+      jawaban:'Menghindari double counting pendapatan/beban dalam grup',
+      penjelasan:'Jika induk jual barang ke anak perusahaan, itu BUKAN pendapatan nyata dari luar grup. Eliminasi dilakukan agar laporan konsolidasi hanya mencerminkan transaksi dengan pihak EKSTERNAL grup. Tanpa eliminasi, pendapatan dan beban akan dihitung dua kali (double counting).'
+    },
+    {
+      tipe:'pilihan',
+      soal:'EBITDA digunakan sebagai proksi arus kas operasi karena...',
+      pilihan:[
+        'EBITDA = Arus Kas Operasi yang sebenarnya',
+        'EBITDA mengecualikan beban non-kas (D&A) dan struktur modal (bunga & pajak)',
+        'EBITDA lebih mudah dihitung dari laba bersih',
+        'EBITDA mencerminkan nilai perusahaan yang sebenarnya'
+      ],
+      jawaban:'EBITDA mengecualikan beban non-kas (D&A) dan struktur modal (bunga & pajak)',
+      penjelasan:'EBITDA = Earnings Before Interest, Taxes, Depreciation & Amortization. Dengan mengecualikan D&A (non-kas) dan bunga/pajak (tergantung struktur modal), EBITDA lebih mencerminkan kemampuan operasional bisnis menghasilkan kas. Namun EBITDA bukan pengganti sempurna arus kas karena mengabaikan perubahan modal kerja.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Perusahaan menerbitkan obligasi nilai nominal Rp 1M dengan kupon 10%, harga jual Rp 950jt (diskon). Selisih Rp 50jt dicatat sebagai...',
+      pilihan:[
+        'Beban bunga langsung pada saat penerbitan',
+        'Diskon Obligasi — diamortisasi sebagai tambahan beban bunga selama umur obligasi',
+        'Pendapatan lain-lain',
+        'Pengurangan nilai obligasi yang tidak perlu dicatat'
+      ],
+      jawaban:'Diskon Obligasi — diamortisasi sebagai tambahan beban bunga selama umur obligasi',
+      penjelasan:'Saat obligasi dijual di bawah nominal (diskon), selisihnya = Diskon Obligasi. Ini dicatat sebagai pengurang liabilitas dan diamortisasi (diakui bertahap) sebagai tambahan beban bunga sepanjang umur obligasi, menggunakan metode bunga efektif atau garis lurus.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Manakah yang BUKAN merupakan komponen Other Comprehensive Income (OCI)?',
+      pilihan:[
+        'Selisih kurs translasi laporan keuangan anak perusahaan luar negeri',
+        'Keuntungan/kerugian aktuarial program imbalan pasti',
+        'Pendapatan dari penjualan produk utama',
+        'Unrealized gain/loss investasi tersedia untuk dijual'
+      ],
+      jawaban:'Pendapatan dari penjualan produk utama',
+      penjelasan:'OCI (Other Comprehensive Income) adalah item yang memengaruhi ekuitas tapi tidak masuk Laba Rugi biasa. Contoh OCI: selisih kurs translasi, keuntungan aktuarial, unrealized gain/loss investasi AFS. Pendapatan dari penjualan produk utama adalah bagian dari Laba Rugi biasa (Profit & Loss), bukan OCI.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Impairment aset tetap (PSAK 48) dilakukan ketika...',
+      pilihan:[
+        'Nilai buku aset lebih rendah dari nilai pasar',
+        'Nilai terpulihkan (recoverable amount) lebih rendah dari nilai buku (carrying amount)',
+        'Aset sudah berumur lebih dari 5 tahun',
+        'Perusahaan ingin memperkecil aset di neraca'
+      ],
+      jawaban:'Nilai terpulihkan (recoverable amount) lebih rendah dari nilai buku (carrying amount)',
+      penjelasan:'PSAK 48 (IAS 36): Impairment terjadi jika Carrying Amount > Recoverable Amount. Recoverable Amount = max(Fair Value less Cost to Sell, Value in Use). Jika terjadi impairment: Debit Kerugian Penurunan Nilai | Kredit Akumulasi Kerugian Penurunan Nilai.'
+    },
+    {
+      tipe:'pilihan',
+      soal:'Dalam analisis DuPont 3 faktor, ROE dapat diurai menjadi...',
+      pilihan:[
+        'ROE = Margin Laba × Pertumbuhan Penjualan × Leverage',
+        'ROE = Net Profit Margin × Asset Turnover × Equity Multiplier',
+        'ROE = ROA × DER × Current Ratio',
+        'ROE = EBITDA Margin × Debt Ratio × Growth Rate'
+      ],
+      jawaban:'ROE = Net Profit Margin × Asset Turnover × Equity Multiplier',
+      penjelasan:'DuPont 3-Factor: ROE = (Laba Bersih/Penjualan) × (Penjualan/Total Aset) × (Total Aset/Ekuitas) = Net Profit Margin × Asset Turnover × Equity Multiplier. Ini mengurai ROE menjadi: efisiensi operasi, efisiensi penggunaan aset, dan leverage keuangan — berguna untuk diagnosis kinerja perusahaan.'
+    }
+  ]
+};
+
+let latState = {
+  level: null,
+  soalList: [],
+  currentIdx: 0,
+  jawaban: [],
+  selesai: false
+};
+
+function startLevel(level) {
+  latState = {
+    level,
+    soalList: [...SOAL_BANK[level]],
+    currentIdx: 0,
+    jawaban: [],
+    selesai: false
+  };
+  // highlight active level button
+  ['mudah','menengah','susah','ahli'].forEach(l => {
+    const btn = $('lbtn-'+l);
+    if(btn) btn.className = l===level ? 'btn btn-pri btn-sm' : 'btn btn-sec btn-sm';
+  });
+  $('lat-rekap').style.display = 'none';
+  renderSoal();
+}
+
+function renderSoal() {
+  const { soalList, currentIdx, level } = latState;
+  const total = soalList.length;
+  const pct = (currentIdx / total) * 100;
+  const skor = latState.jawaban.filter(j => j.benar).length;
+
+  // update progress
+  $('lat-progress-bar').style.width = pct + '%';
+  $('lat-progress-lbl').textContent = currentIdx >= total
+    ? `Selesai! Level ${level.charAt(0).toUpperCase()+level.slice(1)}`
+    : `Soal ${currentIdx + 1} dari ${total} — Level ${level.charAt(0).toUpperCase()+level.slice(1)}`;
+  $('lat-score-lbl').textContent = `Skor: ${skor} / ${currentIdx}`;
+
+  if (currentIdx >= total) {
+    showRekap();
+    return;
+  }
+
+  const soal = soalList[currentIdx];
+  const levelColor = {mudah:'var(--green)',menengah:'var(--amber)',susah:'#F97316',ahli:'var(--red)'};
+  const levelBg = {mudah:'var(--green-bg)',menengah:'var(--amber-bg)',susah:'#1A0D00',ahli:'var(--red-bg)'};
+
+  let pilihanHTML = soal.pilihan.map((p, i) => `
+    <button class="lat-pilihan" id="pilihan-${i}" onclick="pilihJawaban(${i})"
+      style="width:100%;text-align:left;padding:11px 15px;margin-bottom:8px;border:1px solid var(--border2);
+      border-radius:var(--rad-sm);background:var(--surface2);cursor:pointer;font-size:13px;
+      color:var(--text);font-family:'Inter',sans-serif;transition:all .15s;display:flex;align-items:center;gap:10px">
+      <span style="width:24px;height:24px;border-radius:50%;background:var(--surface);border:1px solid var(--border2);
+        display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;font-weight:600">
+        ${String.fromCharCode(65+i)}
+      </span>
+      <span>${p}</span>
+    </button>`).join('');
+
+  $('lat-soal-area').innerHTML = `
+    <div class="card" style="border-left:3px solid ${levelColor[level]}">
+      <div class="card-hd" style="background:${levelBg[level]}">
+        <span style="color:${levelColor[level]};font-size:12px">SOAL ${currentIdx+1}</span>
+        <span class="badge" style="background:${levelBg[level]};color:${levelColor[level]};border-color:${levelColor[level]};margin-left:4px">${level.toUpperCase()}</span>
+      </div>
+      <div class="card-bd">
+        <div style="font-size:15px;font-weight:500;line-height:1.6;margin-bottom:16px">${soal.soal}</div>
+        <div id="pilihan-wrap">${pilihanHTML}</div>
+        <div id="feedback-area" style="display:none"></div>
+        <div id="next-btn-wrap" style="display:none;margin-top:14px">
+          <button class="btn btn-pri" onclick="nextSoal()">
+            ${currentIdx < soalList.length - 1 ? 'Soal Berikutnya →' : '📊 Lihat Rekap Akhir'}
+          </button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function pilihJawaban(idx) {
+  const soal = latState.soalList[latState.currentIdx];
+  const pilihanEls = document.querySelectorAll('.lat-pilihan');
+  const jawabanUser = soal.pilihan[idx];
+  const benar = jawabanUser === soal.jawaban;
+
+  // disable all buttons
+  pilihanEls.forEach((el, i) => {
+    el.onclick = null;
+    el.style.cursor = 'default';
+    el.style.opacity = '0.7';
+    const isBenar = soal.pilihan[i] === soal.jawaban;
+    const isUser = i === idx;
+    if (isBenar) {
+      el.style.background = 'var(--green-bg)';
+      el.style.borderColor = 'var(--green)';
+      el.style.color = 'var(--green)';
+      el.style.opacity = '1';
+      el.querySelector('span').style.background = 'var(--green)';
+      el.querySelector('span').style.color = '#0A0A0A';
+      el.querySelector('span').style.borderColor = 'var(--green)';
+    } else if (isUser && !benar) {
+      el.style.background = 'var(--red-bg)';
+      el.style.borderColor = 'var(--red)';
+      el.style.color = 'var(--red)';
+      el.style.opacity = '1';
+    }
+  });
+
+  latState.jawaban.push({ soalIdx: latState.currentIdx, jawabanUser, benar });
+
+  // feedback
+  const fb = $('feedback-area');
+  fb.style.display = 'block';
+  fb.innerHTML = `
+    <div class="alert ${benar ? 'al-ok' : 'al-err'}" style="margin-top:12px">
+      <span style="font-size:18px">${benar ? '✅' : '❌'}</span>
+      <div>
+        <div style="font-weight:600;margin-bottom:4px">${benar ? 'Benar! Bagus sekali!' : `Kurang tepat. Jawaban benar: ${soal.jawaban}`}</div>
+        <div style="font-size:13px;line-height:1.6;opacity:.9">${soal.penjelasan}</div>
+      </div>
+    </div>`;
+
+  $('next-btn-wrap').style.display = 'block';
+  updateProgress();
+}
+
+function nextSoal() {
+  latState.currentIdx++;
+  renderSoal();
+}
+
+function updateProgress() {
+  const skor = latState.jawaban.filter(j=>j.benar).length;
+  $('lat-score-lbl').textContent = `Skor: ${skor} / ${latState.jawaban.length}`;
+}
+
+function showRekap() {
+  const { soalList, jawaban, level } = latState;
+  const skor = jawaban.filter(j=>j.benar).length;
+  const total = soalList.length;
+  const pct = Math.round(skor/total*100);
+  const levelColor = {mudah:'var(--green)',menengah:'var(--amber)',susah:'#F97316',ahli:'var(--red)'};
+
+  $('lat-progress-bar').style.width = '100%';
+  $('lat-progress-lbl').textContent = `✅ Selesai! Level ${level.charAt(0).toUpperCase()+level.slice(1)}`;
+  $('lat-score-lbl').textContent = `Skor: ${skor} / ${total} (${pct}%)`;
+
+  let predikat, predikatColor;
+  if(pct===100){predikat='🏆 Sempurna!';predikatColor='var(--green)';}
+  else if(pct>=80){predikat='🥇 Sangat Baik';predikatColor='var(--green)';}
+  else if(pct>=60){predikat='🥈 Cukup Baik';predikatColor='var(--amber)';}
+  else if(pct>=40){predikat='🥉 Perlu Belajar Lagi';predikatColor='var(--amber)';}
+  else{predikat='📚 Ulangi Materi Dulu';predikatColor='var(--red)';}
+
+  $('lat-soal-area').innerHTML = `
+    <div class="card" style="text-align:center;padding:24px;border-left:3px solid ${levelColor[level]}">
+      <div style="font-size:48px;margin-bottom:8px">${skor===total?'🏆':skor>=total*0.8?'🎉':'📖'}</div>
+      <div style="font-size:22px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:4px">${skor} / ${total} Benar</div>
+      <div style="font-size:28px;font-weight:700;color:${levelColor[level]};margin-bottom:8px">${pct}%</div>
+      <div style="font-size:16px;font-weight:600;color:${predikatColor};margin-bottom:16px">${predikat}</div>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-pri" onclick="startLevel('${level}')">🔄 Ulangi Level Ini</button>
+        ${level!=='ahli'?`<button class="btn btn-sec" onclick="startLevel('${getNextLevel(level)}')">➡️ Level Berikutnya</button>`:''}
+        <button class="btn btn-sec" onclick="toggleRekap()">📋 Detail Jawaban</button>
+      </div>
+    </div>`;
+
+  // build rekap table
+  const rows = jawaban.map((j,i) => {
+    const soal = soalList[j.soalIdx];
+    return `<tr>
+      <td style="font-weight:500">${j.soalIdx+1}</td>
+      <td style="font-size:12px;max-width:200px">${soal.soal.substring(0,80)}${soal.soal.length>80?'...':''}</td>
+      <td style="font-size:12px;color:${j.benar?'var(--green)':'var(--red)'}">${j.jawabanUser}</td>
+      <td style="font-size:12px;color:var(--green)">${soal.jawaban}</td>
+      <td class="tc"><span class="badge ${j.benar?'bg-green':'bg-red'}">${j.benar?'✓ Benar':'✗ Salah'}</span></td>
+    </tr>`;
+  }).join('');
+  $('lat-rekap-body').innerHTML = rows;
+  $('lat-rekap').style.display = 'block';
+}
+
+function toggleRekap() {
+  const r = $('lat-rekap');
+  r.style.display = r.style.display==='none' ? 'block' : 'none';
+}
+
+function getNextLevel(l) {
+  const lvls=['mudah','menengah','susah','ahli'];
+  const i=lvls.indexOf(l);
+  return i<lvls.length-1?lvls[i+1]:l;
+}
+
+function resetLatihan() {
+  latState={level:null,soalList:[],currentIdx:0,jawaban:[],selesai:false};
+  ['mudah','menengah','susah','ahli'].forEach(l=>{
+    const btn=$('lbtn-'+l);
+    if(btn)btn.className='btn btn-sec btn-sm';
+  });
+  $('lat-progress-bar').style.width='0%';
+  $('lat-progress-lbl').textContent='Pilih level untuk mulai';
+  $('lat-score-lbl').textContent='Skor: 0 / 0';
+  $('lat-soal-area').innerHTML='';
+  $('lat-rekap').style.display='none';
+}
+
+</script>
+</body>
+</html>
